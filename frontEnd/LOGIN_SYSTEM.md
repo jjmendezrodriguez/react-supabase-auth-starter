@@ -140,7 +140,7 @@ Authentication > URL Configuration
 
 ### Crear Usuario de Prueba
 
-**Opción 1: Desde Supabase Dashboard**
+#### **Opción 1: Desde Supabase Dashboard**
 
 ```txt
 Authentication > Users > Add User
@@ -149,7 +149,7 @@ Authentication > Users > Add User
 - Email Confirm: activar automáticamente
 ```
 
-**Opción 2: Signup programático (agregar más adelante)**
+#### **Opción 2: Signup programático (agregar más adelante)**
 
 ```tsx
 const { data, error } = await supabase.auth.signUp({
@@ -223,7 +223,7 @@ Usuario cierra app → Sesión guardada en Supabase
 
 **1. Usuario no autenticado intenta acceder a `/user`:**
 
-```
+```txt
 → ProtectedRoute detecta !isAuthenticated
 → Muestra AlertModal "Acceso Denegado"
 → Redirect a "/"
@@ -231,7 +231,7 @@ Usuario cierra app → Sesión guardada en Supabase
 
 **2. Usuario hace click en "Login":**
 
-```
+```txt
 → LoginModal abre
 → Ingresa credenciales
 → Click "Iniciar Sesión"
@@ -242,7 +242,7 @@ Usuario cierra app → Sesión guardada en Supabase
 
 **3. Usuario ahora puede acceder a `/user`:**
 
-```
+```txt
 → ProtectedRoute detecta isAuthenticated
 → Renderiza <Dashboard />
 → Usuario ve contenido protegido
@@ -250,7 +250,7 @@ Usuario cierra app → Sesión guardada en Supabase
 
 **4. Usuario cierra y reabre la app:**
 
-```
+```txt
 → AuthProvider.checkSession() corre
 → Encuentra sesión activa en Supabase
 → Auto-login → Usuario sigue autenticado
@@ -309,28 +309,28 @@ bun dev
 
 **Email inválido:**
 
-```
+```txt
 Input: "not-an-email"
 Resultado: Validación HTML5 previene submit
 ```
 
 **Credenciales incorrectas:**
 
-```
+```txt
 Input: email válido, password incorrecto
 Resultado: Error "Invalid login credentials"
 ```
 
 **Google OAuth cancelado:**
 
-```
+```txt
 Usuario cancela en pantalla de Google
 Resultado: Redirect de vuelta, no se crea sesión
 ```
 
 ## 📂 Archivos Modificados
 
-```
+```txt
 Creados:
 ✓ src/components/LoginModal.tsx
 
