@@ -1,7 +1,11 @@
 [build]
-  base = "frontend"
+  base = "frontEnd"
   command = "bun run build"
-  publish = "frontend/dist"
+  publish = "frontEnd/dist"
+
+[build.environment]
+  NETLIFY_USE_BUN = "true"
+  NODE_VERSION = "20"
 
 [[redirects]]
   from = "/*"
