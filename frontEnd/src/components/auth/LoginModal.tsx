@@ -1,27 +1,28 @@
 // LoginModal component
 // Modal for user authentication with email/password and Google OAuth
 
-import { useTranslation } from "react-i18next";
-import { supabase } from "@/services/supabase/db";
-import { AuthInput, PasswordInput, OAuthButton } from "@/components/auth";
-import useAuthForm from "@/hooks/useAuthForm";
-import AlertModal from "@/components/AlertModal";
-import { useState } from "react";
-import { createBackdropClickHandler } from "@/utils/modalHelpers";
-import { logger } from "@/utils/logger";
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
+import { supabase } from '@/services/supabase/db'
+import { AuthInput, PasswordInput, OAuthButton } from '@/components/auth'
+import useAuthForm from '@/hooks/useAuthForm'
+import AlertModal from '@/components/AlertModal'
+import { useState } from 'react'
+import { createBackdropClickHandler } from '@/utils/modalHelpers'
+import { logger } from '@/utils/logger'
 
 interface LoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
   onLoginSuccess: (
     userId: string,
     userName: string,
     userEmail: string,
     firstName?: string,
-    lastName?: string,
-  ) => void;
-  onSwitchToSignup?: () => void;
-  onSwitchToForgotPassword?: () => void;
+    lastName?: string
+  ) => void
+  onSwitchToSignup?: () => void
+  onSwitchToForgotPassword?: () => void
 }
 
 /**
@@ -40,9 +41,10 @@ export default function LoginModal({
   onSwitchToSignup,
   onSwitchToForgotPassword,
 }: LoginModalProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
+  const navigate = useNavigate()
   const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] =
-    useState(false);
+    useState(false)
 
   // Use auth form hook for form state and validation
   const {
@@ -60,40 +62,43 @@ export default function LoginModal({
           await supabase.auth.signInWithPassword({
             email,
             password,
-          });
+          })
 
         if (authError) {
           // Check if error is invalid credentials
           if (
-            authError.message.includes("Invalid") ||
-            authError.message.includes("credentials")
+            authError.message.includes('Invalid') ||
+            authError.message.includes('credentials')
           ) {
-            setShowInvalidCredentialsAlert(true);
+            setShowInvalidCredentialsAlert(true)
           } else {
-            setGeneralError("auth.errors.loginError");
+            setGeneralError('auth.errors.loginError')
           }
-          return;
+          return
         }
 
         if (data.user) {
           // Success - call callback with user data
-          const firstName = data.user.user_metadata?.firstName;
-          const lastName = data.user.user_metadata?.lastName;
+          const firstName = data.user.user_metadata?.firstName
+          const lastName = data.user.user_metadata?.lastName
           const displayName =
             data.user.user_metadata?.display_name ||
             data.user.email ||
-            "Usuario";
-          const email = data.user.email || "";
+            'Usuario'
+          const email = data.user.email || ''
 
-          onLoginSuccess(data.user.id, displayName, email, firstName, lastName);
-          onClose();
+          onLoginSuccess(data.user.id, displayName, email, firstName, lastName)
+          onClose()
+
+          // Redirect to user dashboard after successful login
+          navigate('/user')
         }
       } catch (err) {
-        setGeneralError("auth.errors.loginError");
-        logger.error("Login error", err);
+        setGeneralError('auth.errors.loginError')
+        logger.error('Login error', err)
       }
     },
-  });
+  })
 
   /**
    * Handle Google OAuth login
@@ -104,57 +109,57 @@ export default function LoginModal({
       // Use production domain if available, otherwise use current origin
       const redirectUrl = import.meta.env.PROD
         ? `${window.location.origin}/user`
-        : `${window.location.origin}/user`;
+        : `${window.location.origin}/user`
 
       const { error: authError } = await supabase.auth.signInWithOAuth({
-        provider: "google",
+        provider: 'google',
         options: {
           redirectTo: redirectUrl,
         },
-      });
+      })
 
       if (authError) {
-        setGeneralError("auth.errors.loginError");
+        setGeneralError('auth.errors.loginError')
       }
       // OAuth redirects automatically, no need to handle success here
     } catch (err) {
-      setGeneralError("auth.errors.loginError");
-      logger.error("Google login error", err);
+      setGeneralError('auth.errors.loginError')
+      logger.error('Google login error', err)
     }
-  };
+  }
 
   // Create backdrop click handler using utility
   const handleBackdropClick = createBackdropClickHandler(
     formState.loading,
-    onClose,
-  );
+    onClose
+  )
 
   /**
    * Handle switch to signup
    * Closes login modal and opens signup modal
    */
   const handleSwitchToSignup = () => {
-    resetForm();
-    onClose();
+    resetForm()
+    onClose()
     if (onSwitchToSignup) {
-      onSwitchToSignup();
+      onSwitchToSignup()
     }
-  };
+  }
 
   /**
    * Handle switch to forgot password
    * Closes login modal and opens forgot password modal
    */
   const handleSwitchToForgotPassword = () => {
-    resetForm();
-    onClose();
+    resetForm()
+    onClose()
     if (onSwitchToForgotPassword) {
-      onSwitchToForgotPassword();
+      onSwitchToForgotPassword()
     }
-  };
+  }
 
   // Early return if modal is not open
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <>
@@ -177,7 +182,7 @@ export default function LoginModal({
             id="login-modal-title"
             className="mb-4 text-center text-xl font-bold sm:mb-6 sm:text-2xl"
           >
-            {t("auth.login.title")}
+            {t('auth.login.title')}
           </h2>
 
           {/* General error message */}
@@ -218,8 +223,8 @@ export default function LoginModal({
               disabled={formState.loading}
             >
               {formState.loading
-                ? t("auth.login.loading")
-                : t("auth.login.submit")}
+                ? t('auth.login.loading')
+                : t('auth.login.submit')}
             </button>
           </form>
 
@@ -231,7 +236,7 @@ export default function LoginModal({
               className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
               disabled={formState.loading}
             >
-              {t("auth.login.forgotPassword")}
+              {t('auth.login.forgotPassword')}
             </button>
             <button
               type="button"
@@ -239,7 +244,7 @@ export default function LoginModal({
               className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
               disabled={formState.loading}
             >
-              {t("auth.login.createAccount")}
+              {t('auth.login.createAccount')}
             </button>
           </div>
 
@@ -250,7 +255,7 @@ export default function LoginModal({
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="bg-white px-2 text-gray-500">
-                {t("auth.login.orContinueWith")}
+                {t('auth.login.orContinueWith')}
               </span>
             </div>
           </div>
@@ -271,7 +276,7 @@ export default function LoginModal({
             className="btn mt-4 w-full"
             disabled={formState.loading}
           >
-            {t("auth.login.cancel")}
+            {t('auth.login.cancel')}
           </button>
         </div>
       </div>
@@ -280,19 +285,19 @@ export default function LoginModal({
       <AlertModal
         isOpen={showInvalidCredentialsAlert}
         onClose={() => setShowInvalidCredentialsAlert(false)}
-        title={t("auth.errors.invalidCredentials")}
+        title={t('auth.errors.invalidCredentials')}
         message={
           <div>
-            <p className="mb-3">{t("auth.errors.invalidCredentialsMessage")}</p>
+            <p className="mb-3">{t('auth.errors.invalidCredentialsMessage')}</p>
             <p>
-              {t("auth.errors.noAccount")}{" "}
+              {t('auth.errors.noAccount')}{' '}
               <a
                 href="https://supabase.com/dashboard"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
               >
-                {t("auth.errors.createAccountLink")}
+                {t('auth.errors.createAccountLink')}
               </a>
             </p>
           </div>
@@ -301,5 +306,5 @@ export default function LoginModal({
         closeOnBackdropClick={true}
       />
     </>
-  );
+  )
 }

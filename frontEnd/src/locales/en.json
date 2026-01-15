@@ -133,6 +133,9 @@
   "languageSwitcher": {
     "label": "Language"
   },
+  "info": {
+    "underConstruction": "This space is under construction, it's for the WebApp info"
+  },
   "home": {
     "title": "Country House",
     "lightOn": "Turn off light 💡",

@@ -33,6 +33,13 @@ dist-ssr
 coverage/
 .nyc_output/
 
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+*.mp4
+*.webm
+
 # Logs
 *.log
 logs/
