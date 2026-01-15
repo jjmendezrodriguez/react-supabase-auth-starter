@@ -133,6 +133,9 @@
   "languageSwitcher": {
     "label": "Idioma"
   },
+  "info": {
+    "underConstruction": "Este espacio está en construcción, es para la info de la WebApp"
+  },
   "home": {
     "title": "Casa Campo",
     "lightOn": "Apagar luz 💡",

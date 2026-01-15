@@ -165,6 +165,8 @@ frontEnd/
 
 ## 📜 Available Scripts
 
+### Development & Build
+
 | Command       | Description                          |
 | ------------- | ------------------------------------ |
 | `bun install` | Install all dependencies             |
@@ -172,6 +174,29 @@ frontEnd/
 | `bun build`   | Build for production                 |
 | `bun preview` | Preview production build locally     |
 | `bun lint`    | Run ESLint to check code quality     |
+
+### Unit & Integration Testing (Vitest)
+
+| Command             | Description                              |
+| ------------------- | ---------------------------------------- |
+| `bun test`          | Run unit tests in watch mode             |
+| `bun test:ui`       | Open Vitest UI (interactive test runner) |
+| `bun test:run`      | Run tests once (for CI/CD)               |
+| `bun test:coverage` | Generate coverage report                 |
+
+### E2E Testing (Playwright)
+
+| Command                 | Description                                   |
+| ----------------------- | --------------------------------------------- |
+| `bun test:e2e`          | Run E2E tests (headless, all browsers)        |
+| `bun test:e2e:ui`       | Interactive UI mode (debugging & development) |
+| `bun test:e2e:headed`   | Show browser while running tests              |
+| `bun test:e2e:debug`    | Step-by-step debugging mode                   |
+| `bun test:e2e:report`   | Open last HTML report (screenshots & videos)  |
+| `bun test:e2e:chromium` | Run tests only in Chromium                    |
+| `bun test:e2e:firefox`  | Run tests only in Firefox                     |
+| `bun test:e2e:webkit`   | Run tests only in WebKit (Safari)             |
+| `bun test:e2e:codegen`  | Record interactions and generate test code    |
 
 ---
 
@@ -240,6 +265,160 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
    - `on_profile_name_updated` - Sync name to auth.users metadata
 
 > **See:** `src/services/supabase/README.md` for detailed schema and queries.
+
+---
+
+## 🧪 Testing
+
+This project includes comprehensive testing at multiple levels:
+
+### Unit & Integration Tests (Vitest + Testing Library)
+
+**Coverage: 80%+** for critical utils and hooks
+
+```bash
+# Run tests in watch mode
+bun test
+
+# Open interactive UI
+bun test:ui
+
+# Generate coverage report
+bun test:coverage
+```
+
+**What's tested:**
+
+- ✅ `utils/validators.ts` - Email, password validation
+- ✅ `utils/passwordStrength.ts` - Strength calculation
+- ✅ `hooks/useAuth.ts` - Authentication logic
+- ✅ `hooks/useAuthForm.ts` - Form state management
+- ✅ `context/authContext.ts` - Context providers
+
+### E2E Tests (Playwright)
+
+**Multi-browser testing:** Chrome, Firefox, Safari (WebKit)
+
+```bash
+# Run all E2E tests (headless)
+bun test:e2e
+
+# Open Playwright UI (interactive debugging)
+bun test:e2e:ui
+
+# Show browser while running
+bun test:e2e:headed
+
+# Step-by-step debugging
+bun test:e2e:debug
+
+# View HTML report (screenshots, videos, traces)
+bun test:e2e:report
+```
+
+**What's tested:**
+
+#### Authentication Flow (`e2e/auth.spec.ts`)
+
+- ✅ Login with valid credentials
+- ✅ Login failure with invalid credentials
+- ✅ Email format validation
+- ✅ Signup flow with validation
+- ✅ Password strength requirements
+- ✅ Password confirmation matching
+- ✅ Logout and session cleanup
+- ✅ Session persistence after refresh
+
+#### Protected Routes & Dashboard (`e2e/dashboard.spec.ts`)
+
+- ✅ Redirect to home when not authenticated
+- ✅ Dashboard access when authenticated
+- ✅ Navigation between Profile and Settings tabs
+- ✅ Change password modal and validation
+- ✅ Change email functionality
+- ✅ Account deletion confirmation flow
+- ✅ Language switcher
+- ✅ Responsive layout (mobile/desktop)
+
+### Test Organization
+
+```
+frontEnd/
+├── e2e/                       # E2E tests with Playwright
+│   ├── auth.spec.ts           # Authentication tests
+│   ├── dashboard.spec.ts      # Dashboard & protected routes
+│   └── fixtures/              # Reusable test helpers
+│       ├── testData.ts        # Test users, selectors, constants
+│       └── testHelpers.ts     # Login, logout, common actions
+├── src/test/                  # Unit test setup
+│   └── setup.ts               # Vitest configuration
+└── playwright.config.ts       # Playwright configuration
+```
+
+### CI/CD Integration
+
+Tests run automatically on:
+
+- ✅ Every push to `main` or `develop`
+- ✅ Every Pull Request
+
+**GitHub Actions workflow:**
+
+- Runs in 3 browsers (Chromium, Firefox, WebKit)
+- Generates HTML reports with screenshots
+- Uploads artifacts (videos, traces) on failure
+- Blocks merge if tests fail
+
+See workflow: `.github/workflows/playwright.yml`
+
+### Writing New Tests
+
+**Unit tests:**
+
+```typescript
+// src/utils/__tests__/myUtil.test.ts
+import { describe, it, expect } from 'vitest'
+import { myUtil } from '../myUtil'
+
+describe('myUtil', () => {
+  it('should return expected value', () => {
+    expect(myUtil('input')).toBe('output')
+  })
+})
+```
+
+**E2E tests:**
+
+```typescript
+// e2e/myFeature.spec.ts
+import { test, expect } from '@playwright/test'
+import { loginUser } from './fixtures/testHelpers'
+
+test('should test my feature', async ({ page }) => {
+  await loginUser(page)
+  await page.click('button:has-text("My Feature")')
+  await expect(page).toHaveURL('/my-feature')
+})
+```
+
+### Test Generator (Codegen)
+
+Generate test code by recording interactions:
+
+```bash
+bun test:e2e:codegen
+```
+
+This opens:
+
+1. Browser window (interact with your app)
+2. Code window (generates test code automatically)
+
+**Use cases:**
+
+- Learn Playwright syntax
+- Find correct selectors
+- Generate boilerplate quickly
 
 ---
 
