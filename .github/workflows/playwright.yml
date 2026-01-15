@@ -70,14 +70,16 @@ jobs:
               run: bunx playwright install --with-deps ${{ matrix.browser }}
 
             # 6️⃣ Ejecutar tests E2E
-            # --project especifica qué navegador usar
+            # Playwright inicia el servidor automáticamente con webServer config
             - name: Run Playwright tests
               working-directory: ./frontEnd
               run: bun test:e2e --project=${{ matrix.browser }}
               env:
                   # Variables de entorno necesarias
                   CI: true
-                  BASE_URL: http://localhost:5173
+                  # 🔒 Supabase credentials (required for auth tests)
+                  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+                  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
             # 7️⃣ Subir reporte HTML (solo si falla)
             - name: Upload Playwright report
