@@ -5,7 +5,7 @@
  */
 import { test, expect } from '@playwright/test'
 import { SELECTORS, TIMEOUTS, ROUTES } from './fixtures/testData'
-import { loginUser } from './fixtures/testHelpers'
+import { loginUser, checkSupabaseAvailable } from './fixtures/testHelpers'
 
 test.describe('Navigation', () => {
   /**
@@ -34,8 +34,10 @@ test.describe('Navigation', () => {
 
   /**
    * Test 3: Acceso a Dashboard autenticado
+   * Skipped when Supabase is paused/unreachable
    */
   test('should access dashboard when authenticated', async ({ page }) => {
+    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
     await page.goto(ROUTES.home)
 
     // Login usando helper centralizado
@@ -54,8 +56,10 @@ test.describe('Navigation', () => {
 
   /**
    * Test 4: Header muestra estado de autenticación
+   * Skipped when Supabase is paused/unreachable
    */
   test('should show correct auth state in header', async ({ page }) => {
+    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
     await page.goto(ROUTES.home)
 
     // Sin autenticar - muestra Login

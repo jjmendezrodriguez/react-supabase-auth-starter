@@ -6,7 +6,7 @@
  */
 import { test, expect } from '@playwright/test'
 import { TEST_USERS, SELECTORS, TIMEOUTS } from './fixtures/testData'
-import { loginUser } from './fixtures/testHelpers'
+import { loginUser, checkSupabaseAvailable } from './fixtures/testHelpers'
 
 test.describe('Authentication', () => {
   test.beforeEach(async ({ page }) => {
@@ -16,8 +16,10 @@ test.describe('Authentication', () => {
   /**
    * Test 1: Login exitoso
    * Verifica que un usuario válido puede iniciar sesión
+   * Skipped when Supabase is paused/unreachable
    */
   test('should login successfully with valid credentials', async ({ page }) => {
+    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
     // Usar helper centralizado para login
     await loginUser(page)
 
@@ -28,8 +30,10 @@ test.describe('Authentication', () => {
   /**
    * Test 2: Login falla con credenciales inválidas
    * Verifica que se muestra error con datos incorrectos
+   * Skipped when Supabase is paused/unreachable
    */
   test('should show error with invalid credentials', async ({ page }) => {
+    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
     // Click en botón Login
     await page.click(SELECTORS.header.loginButton)
 
@@ -65,8 +69,10 @@ test.describe('Authentication', () => {
   /**
    * Test 3: Logout exitoso
    * Verifica que el usuario puede cerrar sesión
+   * Skipped when Supabase is paused/unreachable
    */
   test('should logout successfully', async ({ page }) => {
+    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
     // Primero hacer login usando helper
     await loginUser(page)
 

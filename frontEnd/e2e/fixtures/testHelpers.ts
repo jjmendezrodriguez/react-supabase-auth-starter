@@ -3,9 +3,60 @@
  *
  * Funciones reutilizables para tests E2E.
  * Encapsulan acciones comunes y reducen código duplicado.
+ * Incluye health check para Supabase (skip tests si no disponible).
  */
 import { type Page, expect } from '@playwright/test'
 import { TEST_USERS, SELECTORS, TIMEOUTS } from './testData'
+
+/**
+ * Cached result of Supabase availability check.
+ * Avoids hitting the API repeatedly across multiple tests.
+ */
+let supabaseAvailable: boolean | null = null
+
+/**
+ * Check if Supabase is reachable
+ *
+ * Pings the Supabase REST endpoint to verify the project is active.
+ * Result is cached so it only runs once per test suite execution.
+ * Returns false if Supabase is paused, unreachable, or env vars are missing.
+ *
+ * @returns true if Supabase responds, false otherwise
+ */
+export async function checkSupabaseAvailable(): Promise<boolean> {
+  // Return cached result if already checked
+  if (supabaseAvailable !== null) return supabaseAvailable
+
+  const supabaseUrl = process.env.VITE_SUPABASE_URL
+
+  // No env var = no Supabase connection possible
+  if (!supabaseUrl) {
+    supabaseAvailable = false
+    return false
+  }
+
+  try {
+    // Ping the Supabase REST health endpoint with a short timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+      method: 'HEAD',
+      headers: {
+        apikey: process.env.VITE_SUPABASE_ANON_KEY || '',
+      },
+      signal: controller.signal,
+    })
+
+    clearTimeout(timeoutId)
+    supabaseAvailable = response.ok || response.status === 400
+    return supabaseAvailable
+  } catch {
+    // Network error, timeout, or Supabase paused
+    supabaseAvailable = false
+    return false
+  }
+}
 
 /**
  * Login Helper
