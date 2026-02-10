@@ -19,7 +19,10 @@ test.describe('Authentication', () => {
    * Skipped when Supabase is paused/unreachable
    */
   test('should login successfully with valid credentials', async ({ page }) => {
-    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
+    test.skip(
+      !(await checkSupabaseAvailable()),
+      'Supabase is not available (paused or unreachable)'
+    )
     // Usar helper centralizado para login
     await loginUser(page)
 
@@ -33,7 +36,10 @@ test.describe('Authentication', () => {
    * Skipped when Supabase is paused/unreachable
    */
   test('should show error with invalid credentials', async ({ page }) => {
-    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
+    test.skip(
+      !(await checkSupabaseAvailable()),
+      'Supabase is not available (paused or unreachable)'
+    )
     // Click en botón Login
     await page.click(SELECTORS.header.loginButton)
 
@@ -72,7 +78,10 @@ test.describe('Authentication', () => {
    * Skipped when Supabase is paused/unreachable
    */
   test('should logout successfully', async ({ page }) => {
-    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
+    test.skip(
+      !(await checkSupabaseAvailable()),
+      'Supabase is not available (paused or unreachable)'
+    )
     // Primero hacer login usando helper
     await loginUser(page)
 

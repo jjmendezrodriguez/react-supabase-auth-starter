@@ -37,7 +37,10 @@ test.describe('Navigation', () => {
    * Skipped when Supabase is paused/unreachable
    */
   test('should access dashboard when authenticated', async ({ page }) => {
-    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
+    test.skip(
+      !(await checkSupabaseAvailable()),
+      'Supabase is not available (paused or unreachable)'
+    )
     await page.goto(ROUTES.home)
 
     // Login usando helper centralizado
@@ -59,7 +62,10 @@ test.describe('Navigation', () => {
    * Skipped when Supabase is paused/unreachable
    */
   test('should show correct auth state in header', async ({ page }) => {
-    test.skip(!(await checkSupabaseAvailable()), 'Supabase is not available (paused or unreachable)')
+    test.skip(
+      !(await checkSupabaseAvailable()),
+      'Supabase is not available (paused or unreachable)'
+    )
     await page.goto(ROUTES.home)
 
     // Sin autenticar - muestra Login

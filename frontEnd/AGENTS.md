@@ -50,6 +50,8 @@ Think of it as "linting rules for AI" - just as ESLint enforces code style, this
    - [2.4 Module Boundaries](#24-module-boundaries)
    - [2.5 Path Aliases Configuration](#25-path-aliases-configuration)
 
+<!-- markdownlint-disable MD029 -->
+
 ### � Important Sections (Core Development)
 
 3. **[💻 Language & Best Practices](#3--language--best-practices)** 🟡
@@ -114,6 +116,8 @@ Think of it as "linting rules for AI" - just as ESLint enforces code style, this
     - [11.3 Why Small PRs Are CRITICAL](#113-why-small-prs-are-critical)
     - [11.4 Code Review Standards](#114-code-review-standards)
     - [11.5 Branch Protection Rules](#115-branch-protection-rules)
+
+<!-- markdownlint-enable MD029 -->
 
 ### 📑 Quick Access Sections
 

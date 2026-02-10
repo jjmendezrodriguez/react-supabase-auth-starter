@@ -96,7 +96,7 @@ Visit `http://localhost:5173` to see the app running.
 
 ---
 
-## 🛠️ Tech Stack
+## � Tech Stack
 
 ### Core
 
@@ -132,7 +132,7 @@ Visit `http://localhost:5173` to see the app running.
 
 ## 📁 Project Structure
 
-```
+```txt
 frontEnd/
 ├── src/
 │   ├── assets/          # Static assets (images, icons)
@@ -340,7 +340,7 @@ bun test:e2e:report
 
 ### Test Organization
 
-```
+```txt
 frontEnd/
 ├── e2e/                       # E2E tests with Playwright
 │   ├── auth.spec.ts           # Authentication tests
@@ -443,7 +443,7 @@ Split files when:
 
 **Pattern:**
 
-```
+```txt
 ComponentName/
 ├── ComponentName.tsx         # UI + JSX
 ├── useComponentName.ts       # Hook with state/handlers
@@ -533,7 +533,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](../LICE
 For questions or issues:
 
 - **GitHub Issues:** [Create an issue](https://github.com/jjmendezrodriguez/react-supabase-auth-starter/issues)
-- **Email:** support@mendeztech.com
+- **Email:** <support@mendeztech.com>
 - **Documentation:** See `AGENTS.md` and `PROJECT_STRUCTURE.md`
 
 ---
