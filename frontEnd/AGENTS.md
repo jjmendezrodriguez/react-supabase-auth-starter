@@ -2962,20 +2962,21 @@ const quickHotfix = () => {
 
 Every project must specify its license in the root directory:
 
-**Private/Commercial projects:**
-
-- Use Proprietary License (Mendez Tech)
+**This project uses the MIT License** — open-source and community-friendly.
 
 **Open-source projects:**
 
-- Use MIT, Apache 2.0, or GPL 3.0 (based on project needs)
+- Use MIT (default), Apache 2.0, or GPL 3.0 (based on project needs)
 
-**Proprietary License Template:**
+**Private/Commercial projects:**
+
+- Use Proprietary License when applicable (not this project)
+
+**MIT License reference:**
 
 ```txt
-© 2025 Mendez Tech. All rights reserved.
-Unauthorized copying, distribution, or use of this software
-is strictly prohibited.
+© 2026 Jose Mendez. Licensed under the MIT License.
+See LICENSE file for full terms.
 ```
 
 ---

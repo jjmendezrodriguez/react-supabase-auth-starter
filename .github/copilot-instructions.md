@@ -387,4 +387,6 @@ This file is a **summary** of the complete coding standards. For full details:
 
 ## Licencia
 
-© 2025 Mendez Tech. Propiedad privada. Copia no autorizada prohibida.
+This project is licensed under the **MIT License** — see [LICENSE](../LICENSE) for details.
+
+© 2026 Jose Mendez

@@ -512,11 +512,9 @@ Then open a Pull Request with:
 
 ## 📄 License
 
-**© 2025 Mendez Tech. All rights reserved.**
+This project is licensed under the **MIT License** — see the [LICENSE](../LICENSE) file for details.
 
-This project is **private and proprietary**. Unauthorized copying, distribution, modification, or use of this software is strictly prohibited.
-
-For licensing inquiries, contact: [contact@mendeztech.com](mailto:contact@mendeztech.com)
+© 2026 Jose Mendez
 
 ---
 
