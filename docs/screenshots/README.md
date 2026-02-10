@@ -1,15 +1,17 @@
-# Screenshots Placeholder
+# Screenshots
 
 ## 📸 How to Add Screenshots
 
 1. Take screenshots of your app:
-
-   - `home.png` - Homepage with Country House demo
+   - `home.png` - Homepage with Country House demo (light off)
+   - `home-active.png` - Homepage with light on and effects active
    - `login-modal.png` - Login modal showing email/password and Google OAuth
-   - `language-switcher.png` - Language selector (English/Español)
    - `signup-modal.png` - Account creation form
    - `forgot-password.png` - Password recovery flow
-   - `dashboard.png` - User dashboard after login
+   - `language-switcher.png` - Language selector (English/Español)
+   - `dashboard-profile.png` - User dashboard with Profile tab
+   - `dashboard-settings.png` - User dashboard with Settings tab
+   - `info-page.png` - Info page
 
 2. Place images in this folder (`docs/screenshots/`)
 
@@ -23,14 +25,18 @@
 - **macOS:** Cmd + Shift + 4
 - **Windows:** Windows + Shift + S
 - **Linux:** Screenshot tool or `gnome-screenshot`
+- **Automated:** Playwright screenshot API (`page.screenshot()`)
 
 ## 📊 Current Screenshots
 
-- [ ] home.png
-- [ ] login-modal.png
-- [ ] language-switcher.png
+- [x] home.png
+- [x] login-modal.png
+- [x] language-switcher.png
+- [ ] home-active.png
 - [ ] signup-modal.png
 - [ ] forgot-password.png
-- [ ] dashboard.png
+- [ ] dashboard-profile.png
+- [ ] dashboard-settings.png
+- [ ] info-page.png
 
-**Note:** Until you add real screenshots, the README will show placeholder image paths. Replace them once screenshots are ready.
+**Note:** The 3 existing screenshots (home, login-modal, language-switcher) were added manually. The remaining 6 need to be captured. Dashboard screenshots require a logged-in session.

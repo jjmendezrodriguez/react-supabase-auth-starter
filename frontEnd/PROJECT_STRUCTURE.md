@@ -230,21 +230,21 @@ mv src/services/authService.ts src/features/auth/services/
 
 ```typescript
 // src/features/auth/index.ts
-export { LoginForm, SignupModal } from "./components";
-export { useAuth } from "./hooks";
-export { authService } from "./services";
-export type { User, AuthState } from "./types";
+export { LoginForm, SignupModal } from './components'
+export { useAuth } from './hooks'
+export { authService } from './services'
+export type { User, AuthState } from './types'
 ```
 
 **Paso 5: Actualizar imports en pages**
 
 ```typescript
 // Antes
-import { LoginForm } from "@/components/LoginForm";
-import { useAuth } from "@/hooks/useAuth";
+import { LoginForm } from '@/components/LoginForm'
+import { useAuth } from '@/hooks/useAuth'
 
 // Después
-import { LoginForm, useAuth } from "@/features/auth";
+import { LoginForm, useAuth } from '@/features/auth'
 ```
 
 **Paso 6: Mover componentes compartidos a `shared/`**
@@ -258,7 +258,7 @@ mv src/components/Modal.tsx src/shared/components/
 
 ---
 
-### 🔹 Estructura actual de webApp (Type-based)
+### 🔹 Estructura actual de react-supabase-auth-starter (Type-based)
 
 **Tu proyecto actualmente usa Type-based structure:**
 
@@ -361,40 +361,40 @@ shared/components/
 
 ```typescript
 // ✅ GOOD: Import from services
-import { supabase } from "@/services/supabase/db";
+import { supabase } from '@/services/supabase/db'
 
 // ✅ GOOD: Import from utils
-import { validateEmail } from "@/utils/validators";
+import { validateEmail } from '@/utils/validators'
 
 // ✅ GOOD: Import from same feature
-import { LoginForm } from "./LoginForm";
-import { useAuth } from "../hooks/useAuth";
+import { LoginForm } from './LoginForm'
+import { useAuth } from '../hooks/useAuth'
 
 // ✅ GOOD: Import from shared/common
-import { Button } from "@/components/Button";
-import { useDebounce } from "@/hooks/useDebounce";
+import { Button } from '@/components/Button'
+import { useDebounce } from '@/hooks/useDebounce'
 
 // ✅ GOOD: Import public API (feature-based)
-import { useAuth, LoginForm } from "@/features/auth";
+import { useAuth, LoginForm } from '@/features/auth'
 ```
 
 ### ❌ **INCORRECTO: Cross-feature imports**
 
 ```typescript
 // ❌ BAD: Importing from another feature directly
-import { getUserData } from "@/features/admin/services/userService";
+import { getUserData } from '@/features/admin/services/userService'
 // Problema: Dependencia entre features (auth → admin)
 
 // ❌ BAD: Importing UI from services
-import { LoginModal } from "@/services/authService";
+import { LoginModal } from '@/services/authService'
 // Problema: Services no deben tener UI
 
 // ❌ BAD: Importing business logic from pages
-import { validateUser } from "@/pages/Login";
+import { validateUser } from '@/pages/Login'
 // Problema: Pages son routing, no business logic
 
 // ❌ BAD: Deep imports bypassing public API
-import { loginUser } from "@/features/auth/services/authService";
+import { loginUser } from '@/features/auth/services/authService'
 // Problema: Debe usar index.ts (public API)
 ```
 
@@ -414,10 +414,10 @@ import { getUserData } from '@/shared/services/userService'
 
 ```typescript
 // features/admin/index.ts
-export { getUserData } from "./services/userService";
+export { getUserData } from './services/userService'
 
 // Otras features importan del public API
-import { getUserData } from "@/features/admin";
+import { getUserData } from '@/features/admin'
 ```
 
 **Opción 3: Crear servicio común**

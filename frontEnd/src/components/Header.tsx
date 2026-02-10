@@ -1,46 +1,42 @@
 // Header component
 // Main navigation bar with logo, nav links, language switcher and auth button
 
-import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router";
-import { useAuth } from "@/hooks/useAuth";
-import { useProfile } from "@/hooks/useProfile";
-import {
-  LoginModal,
-  SignupModal,
-  ForgotPasswordModal,
-} from "@/components/auth";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useState } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router'
+import { useAuth } from '@/hooks/useAuth'
+import { useProfile } from '@/hooks/useProfile'
+import { LoginModal, SignupModal, ForgotPasswordModal } from '@/components/auth'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function Header() {
-  const { isAuthenticated, login, logout, user } = useAuth();
-  const { profile } = useProfile();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showSignupModal, setShowSignupModal] = useState(false);
-  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isAuthenticated, login, logout, user } = useAuth()
+  const { profile } = useProfile()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [showSignupModal, setShowSignupModal] = useState(false)
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   /**
    * Get user's full name from profile or user metadata
    */
   const getUserName = () => {
     if (profile?.first_name && profile?.last_name) {
-      return `${profile.first_name} ${profile.last_name}`;
+      return `${profile.first_name} ${profile.last_name}`
     }
     if (user?.firstName && user?.lastName) {
-      return `${user.firstName} ${user.lastName}`;
+      return `${user.firstName} ${user.lastName}`
     }
-    return user?.name || "User";
-  };
+    return user?.name || 'User'
+  }
 
   /**
    * Check if current route is active
    */
   const isActiveRoute = (path: string) => {
-    return location.pathname === path;
-  };
+    return location.pathname === path
+  }
 
   /**
    * Handle authentication button click
@@ -49,12 +45,12 @@ export default function Header() {
    */
   const handleAuthClick = () => {
     if (isAuthenticated) {
-      navigate("/");
-      logout();
+      navigate('/')
+      logout()
     } else {
-      setShowLoginModal(true);
+      setShowLoginModal(true)
     }
-  };
+  }
 
   /**
    * Handle successful login
@@ -65,47 +61,47 @@ export default function Header() {
     userName: string,
     userEmail: string,
     firstName?: string,
-    lastName?: string,
+    lastName?: string
   ) => {
-    login(userId, userName, userEmail, firstName, lastName);
-    setShowLoginModal(false);
-  };
+    login(userId, userName, userEmail, firstName, lastName)
+    setShowLoginModal(false)
+  }
 
   /**
    * Handle switch to signup
    * Closes login modal and opens signup modal
    */
   const handleSwitchToSignup = () => {
-    setShowLoginModal(false);
-    setShowSignupModal(true);
-  };
+    setShowLoginModal(false)
+    setShowSignupModal(true)
+  }
 
   /**
    * Handle switch to login
    * Closes signup modal and opens login modal
    */
   const handleSwitchToLogin = () => {
-    setShowSignupModal(false);
-    setShowLoginModal(true);
-  };
+    setShowSignupModal(false)
+    setShowLoginModal(true)
+  }
 
   /**
    * Handle switch to forgot password
    * Closes login modal and opens forgot password modal
    */
   const handleSwitchToForgotPassword = () => {
-    setShowLoginModal(false);
-    setShowForgotPasswordModal(true);
-  };
+    setShowLoginModal(false)
+    setShowForgotPasswordModal(true)
+  }
 
   /**
    * Handle switch from forgot password to login
    * Closes forgot password modal and opens login modal
    */
   const handleSwitchFromForgotPasswordToLogin = () => {
-    setShowForgotPasswordModal(false);
-    setShowLoginModal(true);
-  };
+    setShowForgotPasswordModal(false)
+    setShowLoginModal(true)
+  }
 
   return (
     <>
@@ -114,7 +110,7 @@ export default function Header() {
           {/* Logo / Brand name - Left side */}
           <div className="text-xl font-bold">
             <Link to="/" className="hover:text-gray-600">
-              WebApp
+              AuthStarter
             </Link>
           </div>
 
@@ -123,7 +119,7 @@ export default function Header() {
             <Link
               to="/"
               className={`transition-colors hover:text-gray-600 ${
-                isActiveRoute("/") ? "border-b-2 border-blue-600 pb-1" : ""
+                isActiveRoute('/') ? 'border-b-2 border-blue-600 pb-1' : ''
               }`}
             >
               Home
@@ -131,7 +127,7 @@ export default function Header() {
             <Link
               to="/info"
               className={`transition-colors hover:text-gray-600 ${
-                isActiveRoute("/info") ? "border-b-2 border-blue-600 pb-1" : ""
+                isActiveRoute('/info') ? 'border-b-2 border-blue-600 pb-1' : ''
               }`}
             >
               Info
@@ -140,9 +136,9 @@ export default function Header() {
               <Link
                 to="/user"
                 className={`font-medium transition-colors hover:text-gray-600 ${
-                  isActiveRoute("/user")
-                    ? "border-b-2 border-blue-600 pb-1"
-                    : "text-gray-700"
+                  isActiveRoute('/user')
+                    ? 'border-b-2 border-blue-600 pb-1'
+                    : 'text-gray-700'
                 }`}
               >
                 {getUserName()}
@@ -154,7 +150,7 @@ export default function Header() {
           <div className="hidden items-center gap-3 md:flex">
             <LanguageSwitcher />
             <button className="btn" onClick={handleAuthClick}>
-              {isAuthenticated ? "Logout" : "Login"}
+              {isAuthenticated ? 'Logout' : 'Login'}
             </button>
           </div>
 
@@ -189,7 +185,7 @@ export default function Header() {
               <Link
                 to="/"
                 className={`py-2 transition-colors hover:text-gray-600 ${
-                  isActiveRoute("/") ? "font-semibold text-blue-600" : ""
+                  isActiveRoute('/') ? 'font-semibold text-blue-600' : ''
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -198,7 +194,7 @@ export default function Header() {
               <Link
                 to="/info"
                 className={`py-2 transition-colors hover:text-gray-600 ${
-                  isActiveRoute("/info") ? "font-semibold text-blue-600" : ""
+                  isActiveRoute('/info') ? 'font-semibold text-blue-600' : ''
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -208,9 +204,9 @@ export default function Header() {
                 <Link
                   to="/user"
                   className={`py-2 transition-colors hover:text-gray-600 ${
-                    isActiveRoute("/user")
-                      ? "font-semibold text-blue-600"
-                      : "text-gray-700"
+                    isActiveRoute('/user')
+                      ? 'font-semibold text-blue-600'
+                      : 'text-gray-700'
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -224,11 +220,11 @@ export default function Header() {
               <button
                 className="btn mt-2"
                 onClick={() => {
-                  handleAuthClick();
-                  setMobileMenuOpen(false);
+                  handleAuthClick()
+                  setMobileMenuOpen(false)
                 }}
               >
-                {isAuthenticated ? "Logout" : "Login"}
+                {isAuthenticated ? 'Logout' : 'Login'}
               </button>
             </nav>
           </div>
@@ -258,5 +254,5 @@ export default function Header() {
         onSwitchToLogin={handleSwitchFromForgotPasswordToLogin}
       />
     </>
-  );
+  )
 }

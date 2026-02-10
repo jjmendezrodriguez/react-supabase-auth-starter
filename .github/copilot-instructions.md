@@ -1,4 +1,4 @@
-# Copilot Instructions - webApp
+# Copilot Instructions - react-supabase-auth-starter
 
 **Project:** React 19 + TypeScript + Vite + Supabase + Tailwind CSS  
 **Package Manager:** Bun  
@@ -367,7 +367,6 @@ Convención de commits:
 This file is a **summary** of the complete coding standards. For full details:
 
 - **`frontEnd/AGENTS.md`** - Complete coding standards (3000+ lines)
-
   - Security best practices
   - Testing guidelines
   - CI/CD pipeline setup

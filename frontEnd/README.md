@@ -1,4 +1,4 @@
-# WebApp - React Frontend
+# React Supabase Auth Starter - Frontend
 
 > A modern, full-featured web application built with React 19, TypeScript, Vite, Supabase, and Tailwind CSS v4.
 
@@ -264,8 +264,6 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
    - `on_auth_user_email_updated` - Sync email changes
    - `on_profile_name_updated` - Sync name to auth.users metadata
 
-> **See:** `src/services/supabase/README.md` for detailed schema and queries.
-
 ---
 
 ## 🧪 Testing
@@ -464,8 +462,8 @@ We welcome contributions! Please follow these guidelines:
 ### 1. Fork & Clone
 
 ```bash
-git clone https://github.com/jjmendezrodriguez/webApp.git
-cd webApp/frontEnd
+git clone https://github.com/jjmendezrodriguez/react-supabase-auth-starter.git
+cd react-supabase-auth-starter/frontEnd
 ```
 
 ### 2. Create a Branch
@@ -536,7 +534,7 @@ For licensing inquiries, contact: [contact@mendeztech.com](mailto:contact@mendez
 
 For questions or issues:
 
-- **GitHub Issues:** [Create an issue](https://github.com/jjmendezrodriguez/webApp/issues)
+- **GitHub Issues:** [Create an issue](https://github.com/jjmendezrodriguez/react-supabase-auth-starter/issues)
 - **Email:** support@mendeztech.com
 - **Documentation:** See `AGENTS.md` and `PROJECT_STRUCTURE.md`
 

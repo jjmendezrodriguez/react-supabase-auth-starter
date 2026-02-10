@@ -1,4 +1,4 @@
-# Root .gitignore for webApp project
+# Root .gitignore for react-supabase-auth-starter project
 
 # Environment files (CRITICAL - Never commit)
 .env

@@ -1,31 +1,36 @@
-# 🔐 WebApp - Modern Authentication Template
+# 🔐 React Supabase Auth Starter
 
 > **A production-ready authentication system template** built with React 19, TypeScript, and Supabase. Save weeks of development time with enterprise-grade security and best practices out of the box.
 
-[![Live Demo](https://img.shields.io/badge/Demo-Live-success?style=for-the-badge&logo=vercel)](https://web-app-brown-chi.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Demo-Live-success?style=for-the-badge&logo=vercel)](https://react-supabase-auth-starter.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 [![React](https://img.shields.io/badge/React-19.1-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-2.76-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjjmendezrodriguez%2Freact-supabase-auth-starter&env=VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY&envDescription=Supabase%20credentials%20needed%20for%20authentication.%20Get%20them%20from%20your%20Supabase%20project%20dashboard.&envLink=https%3A%2F%2Fsupabase.com%2Fdashboard%2Fproject%2F_%2Fsettings%2Fapi&project-name=react-supabase-auth-starter&root-directory=frontEnd)
+
 ---
 
-## 🎯 What is WebApp?
+## 🎯 What is React Supabase Auth Starter?
 
-**WebApp** is a **production-ready authentication system template** designed for developers who want to build modern web applications quickly without sacrificing code quality. It follows senior-level engineering practices and includes everything you need to start a new project.
+**React Supabase Auth Starter** is a **production-ready authentication system template** designed for developers who want to build modern web applications quickly without sacrificing code quality. It follows senior-level engineering practices and includes everything you need to start a new project.
 
-**🚀 Live Demo:** [https://web-app-brown-chi.vercel.app/](https://web-app-brown-chi.vercel.app/)
+**🚀 Live Demo:** [https://react-supabase-auth-starter.vercel.app/](https://react-supabase-auth-starter.vercel.app/)
 
 ### 📸 Screenshots
 
-**Home Page**
-![Home Page](docs/screenshots/home.png)
+|                Home Page                |                   Login Modal                    |                    Signup Modal                    |
+| :-------------------------------------: | :----------------------------------------------: | :------------------------------------------------: |
+| ![Home Page](docs/screenshots/home.png) | ![Login Modal](docs/screenshots/login-modal.png) | ![Signup Modal](docs/screenshots/signup-modal.png) |
 
-**Authentication Modal**
-![Login Modal](docs/screenshots/login-modal.png)
+|                     Forgot Password                      |                     Dashboard - Profile                      |                      Dashboard - Settings                      |
+| :------------------------------------------------------: | :----------------------------------------------------------: | :------------------------------------------------------------: |
+| ![Forgot Password](docs/screenshots/forgot-password.png) | ![Dashboard Profile](docs/screenshots/dashboard-profile.png) | ![Dashboard Settings](docs/screenshots/dashboard-settings.png) |
 
-**Multi-language Support**
-![Language Switcher](docs/screenshots/language-switcher.png)
+|                      Language Switcher                       |                 Home (Light On)                  |                  Info Page                   |
+| :----------------------------------------------------------: | :----------------------------------------------: | :------------------------------------------: |
+| ![Language Switcher](docs/screenshots/language-switcher.png) | ![Home Active](docs/screenshots/home-active.png) | ![Info Page](docs/screenshots/info-page.png) |
 
 ---
 
@@ -106,8 +111,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/jjmendezrodriguez/webApp.git
-cd webApp
+git clone https://github.com/jjmendezrodriguez/react-supabase-auth-starter.git
+cd react-supabase-auth-starter
 
 # Navigate to frontend
 cd frontEnd
@@ -175,14 +180,97 @@ bun test:coverage # Generate coverage report
 
 ## 🔧 Environment Setup
 
-Create a `.env` file in `frontEnd/`:
+Create a `.env` file in `frontEnd/` (or copy the example):
+
+```bash
+cp frontEnd/.env.example frontEnd/.env
+```
 
 ```env
-VITE_SUPABASE_URL=your-project-url.supabase.co
+VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-Get your Supabase credentials from: [supabase.com/dashboard](https://supabase.com/dashboard)
+Get your Supabase credentials from: **[Supabase Dashboard → Settings → API](https://supabase.com/dashboard/project/_/settings/api)**
+
+---
+
+## 🗄️ Database Setup
+
+### 1. Create `profiles` table
+
+```sql
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  first_name TEXT,
+  last_name TEXT,
+  email TEXT,
+  avatar_url TEXT,
+  bio TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### 2. Enable Row Level Security (RLS)
+
+```sql
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- Users can view their own profile
+CREATE POLICY "Users can view own profile"
+  ON profiles FOR SELECT
+  USING (auth.uid() = id);
+
+-- Users can update their own profile
+CREATE POLICY "Users can update own profile"
+  ON profiles FOR UPDATE
+  USING (auth.uid() = id);
+
+-- Users can insert their own profile
+CREATE POLICY "Users can insert own profile"
+  ON profiles FOR INSERT
+  WITH CHECK (auth.uid() = id);
+```
+
+### 3. Create Database Triggers
+
+These triggers keep profiles in sync with Supabase Auth:
+
+- **`on_auth_user_created`** — Auto-creates a profile row when a new user signs up
+- **`on_auth_user_email_updated`** — Syncs email changes from auth to profiles
+- **`on_profile_name_updated`** — Syncs name changes from profiles to auth.users metadata
+
+### 4. Deploy Edge Function (optional)
+
+The `delete-user` Edge Function handles privileged account deletion:
+
+```bash
+supabase functions deploy delete-user
+```
+
+> **See:** [frontEnd/README.md](frontEnd/README.md#supabase-database-setup) for detailed SQL and trigger definitions.
+
+---
+
+## 📧 Email Templates
+
+Supabase sends automatic emails for authentication events. To customize them:
+
+1. Go to **Supabase Dashboard → Authentication → Email Templates**
+2. Edit these templates to match your brand:
+
+   | Template           | When it's sent                        |
+   | ------------------ | ------------------------------------- |
+   | **Confirm signup** | After user creates an account         |
+   | **Reset password** | When user requests password recovery  |
+   | **Magic link**     | When using passwordless login         |
+   | **Change email**   | When user updates their email address |
+   | **Invite user**    | When you invite users via dashboard   |
+
+3. _(Optional)_ Configure custom SMTP for branded email delivery under **Project Settings → Auth → SMTP Settings**
+
+> **Docs:** [Supabase Email Templates](https://supabase.com/docs/guides/auth/auth-email-templates) · [Custom SMTP](https://supabase.com/docs/guides/auth/auth-smtp)
 
 ---
 
@@ -209,27 +297,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🌟 Show Your Support
 
 If this template helped you save time, give it a ⭐️!
-
-**Variables de entorno** (`.env`):
-
-```env
-VITE_SUPABASE_URL=your-url
-VITE_SUPABASE_ANON_KEY=your-key
-```
-
-## 📚 Comandos
-
-```bash
-bun dev      # Dev server
-bun build    # Build para producción
-bun lint     # ESLint
-```
-
-## 📖 Documentación
-
-- **Instrucciones completas:** `.github/copilot-instructions.md`
-- **Estándares de código:** `frontEnd/AGENTS.md`
-
----
-
-© 2025 Mendez Tech

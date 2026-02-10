@@ -1,6 +1,6 @@
 {
-  "name": "Web App",
-  "short_name": "W A",
+  "name": "React Supabase Auth Starter",
+  "short_name": "AuthStarter",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

@@ -1,6 +1,6 @@
-# Contributing to WebApp
+# Contributing to React Supabase Auth Starter
 
-First off, thank you for considering contributing to WebApp! 🎉
+First off, thank you for considering contributing to React Supabase Auth Starter! 🎉
 
 ## 📋 Table of Contents
 
@@ -33,11 +33,11 @@ This project follows professional engineering standards. Please be respectful an
 ```bash
 # Fork the repository
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/webApp.git
-cd webApp
+git clone https://github.com/YOUR_USERNAME/react-supabase-auth-starter.git
+cd react-supabase-auth-starter
 
 # Add upstream remote
-git remote add upstream https://github.com/jjmendezrodriguez/webApp.git
+git remote add upstream https://github.com/jjmendezrodriguez/react-supabase-auth-starter.git
 
 # Install dependencies
 cd frontEnd
@@ -113,7 +113,6 @@ bun run build
    ```
 
 2. **Open Pull Request** on GitHub
-
    - Use descriptive title: `feat: add dark mode toggle`
    - Fill out PR template
    - Link related issues: `Closes #123`

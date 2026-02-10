@@ -24,14 +24,13 @@
 
 1. Click ⚙️ next to "About"
 2. Fill in:
-
    - **Description:**
 
      ```txt
      🔐 Production-ready authentication template with React 19, TypeScript, and Supabase. Save weeks of development time with enterprise-grade security.
      ```
 
-   - **Website:** `https://web-app-brown-chi.vercel.app/`
+   - **Website:** `https://react-supabase-auth-starter.vercel.app/`
    - **Topics:** (Add these tags)
 
      ```txt
@@ -81,7 +80,7 @@ Create a special repository named `jjmendezrodriguez` (same as username):
 
 ## 📌 Featured Projects
 
-[![WebApp](https://github-readme-stats.vercel.app/api/pin/?username=jjmendezrodriguez&repo=webApp&theme=dark)](https://github.com/jjmendezrodriguez/webApp)
+[![React Supabase Auth Starter](https://github-readme-stats.vercel.app/api/pin/?username=jjmendezrodriguez&repo=react-supabase-auth-starter&theme=dark)](https://github.com/jjmendezrodriguez/react-supabase-auth-starter)
 ```
 
 ---
@@ -92,7 +91,7 @@ Create a special repository named `jjmendezrodriguez` (same as username):
 
 1. Go to your profile: `github.com/jjmendezrodriguez`
 2. Click "Customize your pins"
-3. Select `webApp` ✅
+3. Select `react-supabase-auth-starter` ✅
 4. Arrange it as first pinned repo
 
 ---
@@ -102,20 +101,18 @@ Create a special repository named `jjmendezrodriguez` (same as username):
 **Location:** Local machine → GitHub
 
 1. Take screenshots of your app:
-
    - Homepage (Country House demo)
    - Login modal
    - Language switcher
    - Signup form
 
 2. Optimize images (< 500KB each):
-
    - Use [TinyPNG.com](https://tinypng.com/)
 
 3. Add to repo:
 
    ```bash
-   cd /home/Josemendez/webApp
+   cd /home/Josemendez/react-supabase-auth-starter
    git checkout editApp
 
    # Add your screenshots to docs/screenshots/
@@ -148,7 +145,7 @@ Create a special repository named `jjmendezrodriguez` (same as username):
 
    ## 🚀 Live Demo
 
-   [https://web-app-brown-chi.vercel.app/](https://web-app-brown-chi.vercel.app/)
+   [https://react-supabase-auth-starter.vercel.app/](https://react-supabase-auth-starter.vercel.app/)
    ```
 
 ---
@@ -161,8 +158,8 @@ Create a special repository named `jjmendezrodriguez` (same as username):
 2. Scroll to "Featured" section
 3. Click ➕ Add featured
 4. Select "Link"
-5. Paste: `https://github.com/jjmendezrodriguez/webApp`
-6. Title: `🔐 WebApp - Modern Auth Template`
+5. Paste: `https://github.com/jjmendezrodriguez/react-supabase-auth-starter`
+6. Title: `🔐 React Supabase Auth Starter - Modern Auth Template`
 7. Description:
 
    ```txt
