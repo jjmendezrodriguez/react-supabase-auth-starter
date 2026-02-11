@@ -1,38 +1,35 @@
 // SignupModal component
 // Modal for user registration with email verification
 
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
-import { supabase } from "@/services/supabase/db";
-import { AuthInput, PasswordInput, OAuthButton } from "@/components/auth";
-import useAuthForm from "@/hooks/useAuthForm";
-import AlertModal from "@/components/AlertModal";
-import { useState } from "react";
-import { validatePassword } from "@/utils/validators";
-import { createBackdropClickHandler } from "@/utils/modalHelpers";
-import { logger } from "@/utils/logger";
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
+import { supabase } from '@/services/supabase/db'
+import { AuthInput, PasswordInput, OAuthButton } from '@/components/auth'
+import useAuthForm from '@/hooks/useAuthForm'
+import AlertModal from '@/components/AlertModal'
+import { useState } from 'react'
+import { validatePassword } from '@/utils/validators'
+import { createBackdropClickHandler } from '@/utils/modalHelpers'
+import { logger } from '@/utils/logger'
+import { useUIStore } from '@/stores/uiStore'
 
 interface SignupModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSwitchToLogin?: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 /**
  * SignupModal component
  * Provides user registration UI with email verification
+ * Uses Zustand UI store for modal switching
  * @param isOpen - Controls modal visibility
  * @param onClose - Callback when modal closes
- * @param onSwitchToLogin - Optional callback to switch to login modal
  */
-export default function SignupModal({
-  isOpen,
-  onClose,
-  onSwitchToLogin,
-}: SignupModalProps) {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
+  const switchToLogin = useUIStore((s) => s.switchToLogin)
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
   // Use auth form hook with password confirmation and names
   const {
@@ -60,23 +57,23 @@ export default function SignupModal({
               display_name: `${firstName} ${lastName}`,
             },
           },
-        });
+        })
 
         if (signUpError) {
-          setGeneralError("auth.errors.signupError");
-          return;
+          setGeneralError('auth.errors.signupError')
+          return
         }
 
         // Success - show verification message
-        setShowSuccessAlert(true);
+        setShowSuccessAlert(true)
       } catch (err) {
-        setGeneralError("auth.errors.signupError");
-        logger.error("Signup error", err);
+        setGeneralError('auth.errors.signupError')
+        logger.error('Signup error', err)
       }
     },
     requireConfirmPassword: true,
     requireNames: true,
-  });
+  })
 
   /**
    * Handle Google OAuth signup
@@ -87,62 +84,59 @@ export default function SignupModal({
       // Use production domain if available, otherwise use current origin
       const redirectUrl = import.meta.env.PROD
         ? `${window.location.origin}/user`
-        : `${window.location.origin}/user`;
+        : `${window.location.origin}/user`
 
       const { error: authError } = await supabase.auth.signInWithOAuth({
-        provider: "google",
+        provider: 'google',
         options: {
           redirectTo: redirectUrl,
         },
-      });
+      })
 
       if (authError) {
-        setGeneralError("auth.errors.signupError");
+        setGeneralError('auth.errors.signupError')
       }
       // OAuth redirects automatically
     } catch (err) {
-      setGeneralError("auth.errors.signupError");
-      logger.error("Google signup error", err);
+      setGeneralError('auth.errors.signupError')
+      logger.error('Google signup error', err)
     }
-  };
+  }
 
   // Create backdrop click handler using utility
   const handleBackdropClick = createBackdropClickHandler(
     formState.loading,
-    onClose,
-  );
+    onClose
+  )
 
   /**
    * Handle success alert close
    * Closes both modals, resets form, and redirects to home
    */
   const handleSuccessAlertClose = () => {
-    setShowSuccessAlert(false);
-    onClose(); // Close signup modal
-    resetForm();
+    setShowSuccessAlert(false)
+    onClose() // Close signup modal
+    resetForm()
     // Small delay to ensure modals close before navigation
     setTimeout(() => {
-      navigate("/");
-    }, 100);
-  };
+      navigate('/')
+    }, 100)
+  }
 
   /**
    * Handle switch to login
-   * Closes signup modal and opens login modal
+   * Switches via UI store (single enum, no close-then-open needed)
    */
   const handleSwitchToLogin = () => {
-    resetForm();
-    onClose();
-    if (onSwitchToLogin) {
-      onSwitchToLogin();
-    }
-  };
+    resetForm()
+    switchToLogin()
+  }
 
   // Get password validation details for requirements display
-  const passwordValidation = validatePassword(formState.password);
+  const passwordValidation = validatePassword(formState.password)
 
   // Early return if modal is not open
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <>
@@ -165,7 +159,7 @@ export default function SignupModal({
             id="signup-modal-title"
             className="mb-4 text-center text-xl font-bold sm:mb-6 sm:text-2xl"
           >
-            {t("auth.signup.title")}
+            {t('auth.signup.title')}
           </h2>
 
           {/* General error message */}
@@ -229,38 +223,38 @@ export default function SignupModal({
             {formState.password.length > 0 && (
               <div className="rounded-lg bg-gray-50 p-3 text-sm">
                 <p className="mb-2 font-medium text-gray-700">
-                  {t("auth.signup.passwordRequirements")}
+                  {t('auth.signup.passwordRequirements')}
                 </p>
                 <ul className="space-y-1">
                   <li
                     className={
                       passwordValidation.hasMinLength
-                        ? "text-green-600"
-                        : "text-gray-500"
+                        ? 'text-green-600'
+                        : 'text-gray-500'
                     }
                   >
-                    {passwordValidation.hasMinLength ? "✓" : "○"}{" "}
-                    {t("auth.signup.requirement8Chars")}
+                    {passwordValidation.hasMinLength ? '✓' : '○'}{' '}
+                    {t('auth.signup.requirement8Chars')}
                   </li>
                   <li
                     className={
                       passwordValidation.hasUppercase
-                        ? "text-green-600"
-                        : "text-gray-500"
+                        ? 'text-green-600'
+                        : 'text-gray-500'
                     }
                   >
-                    {passwordValidation.hasUppercase ? "✓" : "○"}{" "}
-                    {t("auth.signup.requirementUppercase")}
+                    {passwordValidation.hasUppercase ? '✓' : '○'}{' '}
+                    {t('auth.signup.requirementUppercase')}
                   </li>
                   <li
                     className={
                       passwordValidation.hasNumber
-                        ? "text-green-600"
-                        : "text-gray-500"
+                        ? 'text-green-600'
+                        : 'text-gray-500'
                     }
                   >
-                    {passwordValidation.hasNumber ? "✓" : "○"}{" "}
-                    {t("auth.signup.requirementNumber")}
+                    {passwordValidation.hasNumber ? '✓' : '○'}{' '}
+                    {t('auth.signup.requirementNumber')}
                   </li>
                 </ul>
               </div>
@@ -283,15 +277,15 @@ export default function SignupModal({
               disabled={formState.loading}
             >
               {formState.loading
-                ? t("auth.signup.loading")
-                : t("auth.signup.submit")}
+                ? t('auth.signup.loading')
+                : t('auth.signup.submit')}
             </button>
           </form>
 
           {/* Switch to login link */}
           <div className="mb-4 text-center text-sm">
             <span className="text-gray-600">
-              {t("auth.signup.alreadyHaveAccount")}{" "}
+              {t('auth.signup.alreadyHaveAccount')}{' '}
             </span>
             <button
               type="button"
@@ -299,7 +293,7 @@ export default function SignupModal({
               className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
               disabled={formState.loading}
             >
-              {t("auth.signup.login")}
+              {t('auth.signup.login')}
             </button>
           </div>
 
@@ -310,7 +304,7 @@ export default function SignupModal({
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="bg-white px-2 text-gray-500">
-                {t("auth.login.orContinueWith")}
+                {t('auth.login.orContinueWith')}
               </span>
             </div>
           </div>
@@ -327,11 +321,12 @@ export default function SignupModal({
           {/* Cancel button */}
           <button
             type="button"
+            data-testid="cancel-button"
             onClick={onClose}
             className="btn mt-4 w-full"
             disabled={formState.loading}
           >
-            {t("auth.login.cancel")}
+            {t('auth.login.cancel')}
           </button>
         </div>
       </div>
@@ -340,8 +335,8 @@ export default function SignupModal({
       <AlertModal
         isOpen={showSuccessAlert}
         onClose={handleSuccessAlertClose}
-        title={t("auth.success.accountCreated")}
-        message={t("auth.success.checkEmail")}
+        title={t('auth.success.accountCreated')}
+        message={t('auth.success.checkEmail')}
         shadowColor="shadow-green-500"
         closeOnBackdropClick={false}
         extraButton={
@@ -351,5 +346,5 @@ export default function SignupModal({
         }
       />
     </>
-  );
+  )
 }

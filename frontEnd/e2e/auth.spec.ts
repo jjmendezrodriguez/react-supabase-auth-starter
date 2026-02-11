@@ -112,7 +112,7 @@ test.describe('Authentication', () => {
     await expect(page.locator(SELECTORS.loginModal.passwordInput)).toBeVisible()
 
     // Cerrar modal (click en Cancelar)
-    await page.click('button:has-text("Cancelar")')
+    await page.click(SELECTORS.loginModal.cancelButton)
 
     // Verificar que el modal se cerró
     await expect(

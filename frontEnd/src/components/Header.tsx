@@ -7,15 +7,20 @@ import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
 import { LoginModal, SignupModal, ForgotPasswordModal } from '@/components/auth'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useUIStore } from '@/stores/uiStore'
 
 export default function Header() {
-  const { isAuthenticated, login, logout, user } = useAuth()
+  const { isAuthenticated, logout, user } = useAuth()
   const { profile } = useProfile()
   const navigate = useNavigate()
   const location = useLocation()
-  const [showLoginModal, setShowLoginModal] = useState(false)
-  const [showSignupModal, setShowSignupModal] = useState(false)
-  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false)
+
+  // UI store for auth modal orchestration
+  const activeAuthModal = useUIStore((s) => s.activeAuthModal)
+  const openLoginModal = useUIStore((s) => s.openLoginModal)
+  const closeAuthModal = useUIStore((s) => s.closeAuthModal)
+
+  // Local state for mobile menu (component-specific)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   /**
@@ -48,59 +53,8 @@ export default function Header() {
       navigate('/')
       logout()
     } else {
-      setShowLoginModal(true)
+      openLoginModal()
     }
-  }
-
-  /**
-   * Handle successful login
-   * Called by LoginModal after authentication succeeds
-   */
-  const handleLoginSuccess = (
-    userId: string,
-    userName: string,
-    userEmail: string,
-    firstName?: string,
-    lastName?: string
-  ) => {
-    login(userId, userName, userEmail, firstName, lastName)
-    setShowLoginModal(false)
-  }
-
-  /**
-   * Handle switch to signup
-   * Closes login modal and opens signup modal
-   */
-  const handleSwitchToSignup = () => {
-    setShowLoginModal(false)
-    setShowSignupModal(true)
-  }
-
-  /**
-   * Handle switch to login
-   * Closes signup modal and opens login modal
-   */
-  const handleSwitchToLogin = () => {
-    setShowSignupModal(false)
-    setShowLoginModal(true)
-  }
-
-  /**
-   * Handle switch to forgot password
-   * Closes login modal and opens forgot password modal
-   */
-  const handleSwitchToForgotPassword = () => {
-    setShowLoginModal(false)
-    setShowForgotPasswordModal(true)
-  }
-
-  /**
-   * Handle switch from forgot password to login
-   * Closes forgot password modal and opens login modal
-   */
-  const handleSwitchFromForgotPasswordToLogin = () => {
-    setShowForgotPasswordModal(false)
-    setShowLoginModal(true)
   }
 
   return (
@@ -233,25 +187,20 @@ export default function Header() {
 
       {/* Login Modal */}
       <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onLoginSuccess={handleLoginSuccess}
-        onSwitchToSignup={handleSwitchToSignup}
-        onSwitchToForgotPassword={handleSwitchToForgotPassword}
+        isOpen={activeAuthModal === 'login'}
+        onClose={closeAuthModal}
       />
 
       {/* Signup Modal */}
       <SignupModal
-        isOpen={showSignupModal}
-        onClose={() => setShowSignupModal(false)}
-        onSwitchToLogin={handleSwitchToLogin}
+        isOpen={activeAuthModal === 'signup'}
+        onClose={closeAuthModal}
       />
 
       {/* Forgot Password Modal */}
       <ForgotPasswordModal
-        isOpen={showForgotPasswordModal}
-        onClose={() => setShowForgotPasswordModal(false)}
-        onSwitchToLogin={handleSwitchFromForgotPasswordToLogin}
+        isOpen={activeAuthModal === 'forgotPassword'}
+        onClose={closeAuthModal}
       />
     </>
   )

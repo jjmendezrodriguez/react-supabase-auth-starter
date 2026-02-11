@@ -5,7 +5,7 @@
 [![Live Demo](https://img.shields.io/badge/Demo-Live-success?style=for-the-badge&logo=vercel)](https://react-supabase-auth-starter.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 [![React](https://img.shields.io/badge/React-19.1-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-2.76-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjjmendezrodriguez%2Freact-supabase-auth-starter&env=VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY&envDescription=Supabase%20credentials%20needed%20for%20authentication.%20Get%20them%20from%20your%20Supabase%20project%20dashboard.&envLink=https%3A%2F%2Fsupabase.com%2Fdashboard%2Fproject%2F_%2Fsettings%2Fapi&project-name=react-supabase-auth-starter&root-directory=frontEnd)
@@ -42,7 +42,7 @@
 - ✅ Google OAuth integration
 - ✅ Password reset flow
 - ✅ Account creation with email verification
-- ✅ Protected routes with AuthContext
+- ✅ Protected routes with Zustand state management
 - ✅ Session persistence
 
 ### 🎨 **Modern UI/UX**
@@ -70,7 +70,8 @@
 
 ### 🧪 **Testing & Quality**
 
-- ✅ Vitest + Testing Library setup
+- ✅ Vitest + Testing Library (unit tests)
+- ✅ Playwright (E2E tests, 3 browsers)
 - ✅ Unit tests for utils and hooks
 - ✅ Test coverage reporting
 - ✅ ESLint + Prettier configuration
@@ -91,9 +92,11 @@
 | Category         | Technologies                                |
 | ---------------- | ------------------------------------------- |
 | **Frontend**     | React 19, TypeScript, Vite, Tailwind CSS v4 |
+| **State**        | Zustand 5 (auth + UI stores)                |
 | **Backend**      | Supabase (Auth, Database, RLS)              |
 | **Runtime**      | Bun (fastest package manager)               |
-| **Testing**      | Vitest, Testing Library, jsdom              |
+| **Unit Testing** | Vitest, Testing Library, jsdom              |
+| **E2E Testing**  | Playwright (Chromium, Firefox, WebKit)      |
 | **CI/CD**        | GitHub Actions, Vercel                      |
 | **Code Quality** | ESLint, Prettier, Husky, lint-staged        |
 | **i18n**         | react-i18next                               |
@@ -128,7 +131,7 @@ cp .env.example .env
 bun dev
 ```
 
-Visit `http://localhost:5173` 🎉
+Visit `http://localhost:5174` 🎉
 
 ---
 
@@ -143,11 +146,12 @@ frontEnd/
 │   ├── hooks/              # Custom React hooks
 │   ├── services/           # External integrations
 │   │   └── supabase/       # Supabase client
+│   ├── stores/             # Zustand state stores
 │   ├── utils/              # Pure utility functions
-│   ├── context/            # React Context providers
 │   ├── pages/              # Route pages
 │   └── locales/            # i18n translations
-├── tests/                  # Test files
+├── e2e/                    # Playwright E2E tests
+├── test/                   # Vitest unit tests
 ├── docs/                   # Documentation
 └── .github/workflows/      # CI/CD pipelines
 ```
@@ -168,12 +172,25 @@ See [PROJECT_STRUCTURE.md](frontEnd/PROJECT_STRUCTURE.md) for detailed organizat
 ## 🧪 Available Scripts
 
 ```bash
-bun dev          # Start development server
-bun build        # Build for production
-bun lint         # Run ESLint
-bun test         # Run tests in watch mode
-bun test:run     # Run tests once
-bun test:coverage # Generate coverage report
+# Development
+bun dev              # Start development server
+bun build            # Build for production
+bun lint             # Run ESLint
+bun preview          # Preview production build
+
+# Unit Tests (Vitest)
+bun test             # Run tests in watch mode
+bun test:run         # Run tests once
+bun test:coverage    # Generate coverage report
+bun test:ui          # Open Vitest UI
+
+# E2E Tests (Playwright)
+bun test:e2e         # Run all E2E tests
+bun test:e2e:headed  # Run with visible browser
+bun test:e2e:ui      # Open Playwright UI
+bun test:e2e:debug   # Debug mode
+bun test:e2e:report  # View last HTML report
+bun test:e2e:codegen # Record new tests
 ```
 
 ---

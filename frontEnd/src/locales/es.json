@@ -52,6 +52,16 @@
       "loginError": "Error al iniciar sesión. Intenta nuevamente.",
       "signupError": "Error al crear cuenta. Intenta nuevamente."
     },
+    "forgotPassword": {
+      "title": "Restablecer Contraseña",
+      "description": "Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.",
+      "submit": "Enviar enlace de restablecimiento",
+      "loading": "Enviando...",
+      "backToLogin": "Volver al inicio de sesión",
+      "successTitle": "Email Enviado",
+      "successMessage": "Revisa tu bandeja de entrada. Te hemos enviado un enlace para restablecer tu contraseña.",
+      "close": "Cerrar"
+    },
     "success": {
       "accountCreated": "¡Cuenta creada exitosamente!",
       "checkEmail": "Revisa tu email para verificar tu cuenta."

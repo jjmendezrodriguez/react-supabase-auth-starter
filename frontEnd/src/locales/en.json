@@ -52,6 +52,16 @@
       "loginError": "Error logging in. Please try again.",
       "signupError": "Error creating account. Please try again."
     },
+    "forgotPassword": {
+      "title": "Reset Password",
+      "description": "Enter your email and we'll send you a link to reset your password.",
+      "submit": "Send reset link",
+      "loading": "Sending...",
+      "backToLogin": "Back to login",
+      "successTitle": "Email Sent",
+      "successMessage": "Check your inbox. We've sent you a link to reset your password.",
+      "close": "Close"
+    },
     "success": {
       "accountCreated": "Account created successfully!",
       "checkEmail": "Check your email to verify your account."

@@ -1,137 +1,134 @@
 // ForgotPasswordModal component
 // Modal for password reset via email
 
-import { useTranslation } from "react-i18next";
-import { supabase } from "@/services/supabase/db";
-import { AuthInput } from "@/components/auth";
-import { useState, type FormEvent } from "react";
-import { getValidationError } from "@/utils/validators";
-import AlertModal from "@/components/AlertModal";
+import { useTranslation } from 'react-i18next'
+import { supabase } from '@/services/supabase/db'
+import { AuthInput } from '@/components/auth'
+import { useState, type FormEvent } from 'react'
+import { getValidationError } from '@/utils/validators'
+import AlertModal from '@/components/AlertModal'
 import {
   handleCloseAlert,
   createBackdropClickHandler,
-} from "@/utils/modalHelpers";
-import { logger } from "@/utils/logger";
+} from '@/utils/modalHelpers'
+import { logger } from '@/utils/logger'
+import { useUIStore } from '@/stores/uiStore'
 
 interface ForgotPasswordModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSwitchToLogin?: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 /**
  * ForgotPasswordModal component
  * Sends password reset email to user
+ * Uses Zustand UI store for modal switching
  * @param isOpen - Controls modal visibility
  * @param onClose - Callback when modal closes
- * @param onSwitchToLogin - Optional callback to switch to login modal
  */
 export default function ForgotPasswordModal({
   isOpen,
   onClose,
-  onSwitchToLogin,
 }: ForgotPasswordModalProps) {
-  const { t } = useTranslation();
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const switchToLogin = useUIStore((s) => s.switchToLogin)
+  const { t } = useTranslation()
+  const [email, setEmail] = useState('')
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
   /**
    * Validate email field
    * @returns true if valid, false otherwise
    */
   const validateForm = (): boolean => {
-    setEmailError(null);
-    setError(null);
+    setEmailError(null)
+    setError(null)
 
-    const emailValidationError = getValidationError("email", email);
+    const emailValidationError = getValidationError('email', email)
     if (emailValidationError) {
-      setEmailError(emailValidationError);
-      return false;
+      setEmailError(emailValidationError)
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   /**
    * Handle form submission
    * Sends password reset email via Supabase
    */
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!validateForm()) {
-      return;
+      return
     }
 
-    setLoading(true);
+    setLoading(true)
 
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(
         email,
         {
           redirectTo: `${window.location.origin}/reset-password`,
-        },
-      );
+        }
+      )
 
       if (resetError) {
-        setError("auth.errors.loginError");
-        setLoading(false);
-        return;
+        setError('auth.errors.loginError')
+        setLoading(false)
+        return
       }
 
       // Success - show confirmation
-      setShowSuccessAlert(true);
+      setShowSuccessAlert(true)
     } catch (err) {
-      setError("auth.errors.loginError");
-      logger.error("Password reset error", err);
+      setError('auth.errors.loginError')
+      logger.error('Password reset error', err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   /**
    * Handle email input change
    * Clears error on change
    */
   const handleEmailChange = (value: string) => {
-    setEmail(value);
-    if (emailError) setEmailError(null);
-  };
+    setEmail(value)
+    if (emailError) setEmailError(null)
+  }
 
   // Create backdrop click handler using utility
-  const handleBackdropClick = createBackdropClickHandler(loading, onClose);
+  const handleBackdropClick = createBackdropClickHandler(loading, onClose)
 
   /**
    * Handle success alert close
    * Closes modal and resets form
    */
   const handleSuccessAlertClose = () => {
-    setShowSuccessAlert(false);
-    setEmail("");
-    setEmailError(null);
-    setError(null);
-    onClose();
-  };
+    setShowSuccessAlert(false)
+    setEmail('')
+    setEmailError(null)
+    setError(null)
+    onClose()
+  }
 
   /**
    * Handle switch to login
-   * Closes forgot password modal and opens login modal
+   * Switches via UI store (single enum, no close-then-open needed)
    */
   const handleSwitchToLogin = () => {
-    setEmail("");
-    setEmailError(null);
-    setError(null);
-    onClose();
-    if (onSwitchToLogin) {
-      onSwitchToLogin();
-    }
-  };
+    setEmail('')
+    setEmailError(null)
+    setError(null)
+    switchToLogin()
+  }
 
   // Early return if modal is not open
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <>
@@ -154,12 +151,11 @@ export default function ForgotPasswordModal({
             id="forgot-password-modal-title"
             className="mb-4 text-center text-xl font-bold sm:mb-6 sm:text-2xl"
           >
-            {t("auth.forgotPassword.title")}
+            {t('auth.forgotPassword.title')}
           </h2>
 
           <p className="mb-4 text-center text-sm text-gray-600">
-            Ingresa tu email y te enviaremos un enlace para restablecer tu
-            contraseña.
+            {t('auth.forgotPassword.description')}
           </p>
 
           {/* General error message */}
@@ -184,7 +180,9 @@ export default function ForgotPasswordModal({
             />
 
             <button type="submit" className="btn w-full" disabled={loading}>
-              {loading ? "Enviando..." : "Enviar enlace de restablecimiento"}
+              {loading
+                ? t('auth.forgotPassword.loading')
+                : t('auth.forgotPassword.submit')}
             </button>
           </form>
 
@@ -196,7 +194,7 @@ export default function ForgotPasswordModal({
               className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
               disabled={loading}
             >
-              Volver al inicio de sesión
+              {t('auth.forgotPassword.backToLogin')}
             </button>
           </div>
 
@@ -206,8 +204,9 @@ export default function ForgotPasswordModal({
             onClick={onClose}
             className="btn mt-4 w-full"
             disabled={loading}
+            data-testid="cancel-button"
           >
-            {t("auth.login.cancel")}
+            {t('auth.login.cancel')}
           </button>
         </div>
       </div>
@@ -216,8 +215,8 @@ export default function ForgotPasswordModal({
       <AlertModal
         isOpen={showSuccessAlert}
         onClose={handleSuccessAlertClose}
-        title="Email Enviado"
-        message="Revisa tu bandeja de entrada. Te hemos enviado un enlace para restablecer tu contraseña."
+        title={t('auth.forgotPassword.successTitle')}
+        message={t('auth.forgotPassword.successMessage')}
         shadowColor="shadow-green-500"
         closeOnBackdropClick={false}
         extraButton={
@@ -225,10 +224,10 @@ export default function ForgotPasswordModal({
             onClick={handleCloseAlert(setShowSuccessAlert)}
             className="btn font-bold"
           >
-            Cerrar
+            {t('auth.forgotPassword.close')}
           </button>
         }
       />
     </>
-  );
+  )
 }

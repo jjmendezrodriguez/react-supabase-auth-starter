@@ -10,37 +10,25 @@ import AlertModal from '@/components/AlertModal'
 import { useState } from 'react'
 import { createBackdropClickHandler } from '@/utils/modalHelpers'
 import { logger } from '@/utils/logger'
+import { useAuthStore } from '@/stores/authStore'
+import { useUIStore } from '@/stores/uiStore'
 
 interface LoginModalProps {
   isOpen: boolean
   onClose: () => void
-  onLoginSuccess: (
-    userId: string,
-    userName: string,
-    userEmail: string,
-    firstName?: string,
-    lastName?: string
-  ) => void
-  onSwitchToSignup?: () => void
-  onSwitchToForgotPassword?: () => void
 }
 
 /**
  * LoginModal component
  * Provides authentication UI with email/password and Google OAuth
+ * Uses Zustand stores directly for auth and modal switching
  * @param isOpen - Controls modal visibility
  * @param onClose - Callback when modal closes
- * @param onLoginSuccess - Callback when login succeeds with user data
- * @param onSwitchToSignup - Optional callback to switch to signup modal
- * @param onSwitchToForgotPassword - Optional callback to switch to forgot password modal
  */
-export default function LoginModal({
-  isOpen,
-  onClose,
-  onLoginSuccess,
-  onSwitchToSignup,
-  onSwitchToForgotPassword,
-}: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+  const login = useAuthStore((s) => s.login)
+  const switchToSignup = useUIStore((s) => s.switchToSignup)
+  const switchToForgotPassword = useUIStore((s) => s.switchToForgotPassword)
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] =
@@ -78,7 +66,7 @@ export default function LoginModal({
         }
 
         if (data.user) {
-          // Success - call callback with user data
+          // Success - update auth store directly
           const firstName = data.user.user_metadata?.firstName
           const lastName = data.user.user_metadata?.lastName
           const displayName =
@@ -87,7 +75,7 @@ export default function LoginModal({
             'Usuario'
           const email = data.user.email || ''
 
-          onLoginSuccess(data.user.id, displayName, email, firstName, lastName)
+          login(data.user.id, displayName, email, firstName, lastName)
           onClose()
 
           // Redirect to user dashboard after successful login
@@ -136,26 +124,20 @@ export default function LoginModal({
 
   /**
    * Handle switch to signup
-   * Closes login modal and opens signup modal
+   * Switches via UI store (single enum, no close-then-open needed)
    */
   const handleSwitchToSignup = () => {
     resetForm()
-    onClose()
-    if (onSwitchToSignup) {
-      onSwitchToSignup()
-    }
+    switchToSignup()
   }
 
   /**
    * Handle switch to forgot password
-   * Closes login modal and opens forgot password modal
+   * Switches via UI store (single enum, no close-then-open needed)
    */
   const handleSwitchToForgotPassword = () => {
     resetForm()
-    onClose()
-    if (onSwitchToForgotPassword) {
-      onSwitchToForgotPassword()
-    }
+    switchToForgotPassword()
   }
 
   // Early return if modal is not open
@@ -272,6 +254,7 @@ export default function LoginModal({
           {/* Cancel button */}
           <button
             type="button"
+            data-testid="cancel-button"
             onClick={onClose}
             className="btn mt-4 w-full"
             disabled={formState.loading}

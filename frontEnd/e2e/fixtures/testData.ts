@@ -53,7 +53,6 @@ export const SELECTORS = {
   // Header
   header: {
     loginButton: 'button:has-text("Login")',
-    signupButton: 'button:has-text("Login")', // Same button - modal switches
     userMenu: '[data-testid="user-menu"]',
     logoutButton: 'button:has-text("Logout")',
   },
@@ -63,6 +62,7 @@ export const SELECTORS = {
     emailInput: 'input#email',
     passwordInput: 'input#password',
     submitButton: 'form >> button[type="submit"]',
+    cancelButton: '[data-testid="cancel-button"]',
     forgotPasswordLink: 'button:has-text("¿Olvidaste tu contraseña?")',
     switchToSignup: 'button:has-text("Crear cuenta")',
   },

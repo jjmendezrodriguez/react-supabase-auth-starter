@@ -144,7 +144,7 @@ frontEnd/
 │   │   ├── LanguageSwitcher.tsx
 │   │   ├── LanguageSwitcherDashboard.tsx
 │   │   └── ProtectedRoute.tsx
-│   ├── context/         # React contexts (AuthContext)
+│   ├── stores/          # Zustand state stores (authStore, uiStore)
 │   ├── hooks/           # Custom hooks (useAuth, useProfile)
 │   ├── locales/         # i18n translations (es.json, en.json)
 │   ├── pages/           # Page components (Home, Dashboard, Info)
@@ -289,9 +289,8 @@ bun test:coverage
 
 - ✅ `utils/validators.ts` - Email, password validation
 - ✅ `utils/passwordStrength.ts` - Strength calculation
-- ✅ `hooks/useAuth.ts` - Authentication logic
+- ✅ `hooks/useAuth.ts` - Authentication logic (Zustand bridge)
 - ✅ `hooks/useAuthForm.ts` - Form state management
-- ✅ `context/authContext.ts` - Context providers
 
 ### E2E Tests (Playwright)
 

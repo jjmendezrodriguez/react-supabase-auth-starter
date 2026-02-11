@@ -291,8 +291,10 @@ frontEnd/
 │   │       ├── profileService.ts
 │   │       └── types.ts
 │   │
-│   ├── context/            # React Context providers
-│   │   └── AuthContext.tsx
+│   ├── stores/             # Zustand state stores
+│   │   ├── authStore.ts
+│   │   ├── uiStore.ts
+│   │   └── index.ts
 │   │
 │   ├── utils/              # Pure utility functions
 │   │   ├── validators.ts

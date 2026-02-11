@@ -1,21 +1,58 @@
 // Tests for useAuth hook
-// Validates proper context access
+// Validates Zustand-based auth state management
 
-import { describe, it, expect } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { renderHook, act } from '@testing-library/react'
 import { useAuth } from '@/hooks/useAuth'
+import { useAuthStore } from '@/stores/authStore'
 
 describe('useAuth', () => {
-  it('should throw error when used outside AuthProvider', () => {
-    // Suppress console.error for this test since we expect an error
-    const originalError = console.error
-    console.error = () => {}
+  // Reset store state before each test
+  beforeEach(() => {
+    useAuthStore.setState({
+      isAuthenticated: false,
+      user: null,
+      loading: false,
+    })
+  })
 
-    expect(() => {
-      renderHook(() => useAuth())
-    }).toThrow('useAuth must be used within an AuthProvider')
+  it('should return initial unauthenticated state', () => {
+    const { result } = renderHook(() => useAuth())
 
-    // Restore console.error
-    console.error = originalError
+    expect(result.current.isAuthenticated).toBe(false)
+    expect(result.current.user).toBeNull()
+    expect(result.current.login).toBeDefined()
+    expect(result.current.logout).toBeDefined()
+  })
+
+  it('should update state after login', () => {
+    const { result } = renderHook(() => useAuth())
+
+    act(() => {
+      result.current.login(
+        'user-123',
+        'Test User',
+        'test@email.com',
+        'Test',
+        'User'
+      )
+    })
+
+    expect(result.current.isAuthenticated).toBe(true)
+    expect(result.current.user).toEqual({
+      id: 'user-123',
+      name: 'Test User',
+      email: 'test@email.com',
+      firstName: 'Test',
+      lastName: 'User',
+    })
+  })
+
+  it('should work without provider wrapping (Zustand does not require providers)', () => {
+    // Zustand stores work anywhere - no provider needed
+    const { result } = renderHook(() => useAuth())
+
+    expect(result.current.isAuthenticated).toBe(false)
+    expect(result.current.user).toBeNull()
   })
 })
