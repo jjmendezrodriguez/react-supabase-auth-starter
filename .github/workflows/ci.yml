@@ -45,9 +45,13 @@ jobs:
       - name: Build project
         run: cd frontEnd && bun run build
 
-      # Step 4: Security Audit - Blocks merge on moderate+ vulnerabilities
+      # Step 4: Security Audit - Generates package-lock.json for audit compatibility
       - name: Security audit
-        run: cd frontEnd && npx audit-ci --moderate
+        run: |
+          cd frontEnd
+          npm i --package-lock-only --ignore-scripts 2>/dev/null
+          npx audit-ci --moderate
+          rm -f package-lock.json
         continue-on-error: false
 
       # Optional: Upload build artifacts

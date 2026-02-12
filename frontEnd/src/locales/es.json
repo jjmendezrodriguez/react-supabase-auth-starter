@@ -50,6 +50,7 @@
       "noAccount": "¿No tienes cuenta?",
       "createAccountLink": "Crea una cuenta",
       "loginError": "Error al iniciar sesión. Intenta nuevamente.",
+      "tooManyAttempts": "Demasiados intentos fallidos. Espera antes de intentar nuevamente.",
       "signupError": "Error al crear cuenta. Intenta nuevamente."
     },
     "forgotPassword": {

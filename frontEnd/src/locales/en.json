@@ -50,6 +50,7 @@
       "noAccount": "Don't have an account?",
       "createAccountLink": "Create an account",
       "loginError": "Error logging in. Please try again.",
+      "tooManyAttempts": "Too many failed attempts. Please wait before trying again.",
       "signupError": "Error creating account. Please try again."
     },
     "forgotPassword": {
