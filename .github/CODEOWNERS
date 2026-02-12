@@ -1,0 +1,38 @@
+# CODEOWNERS - react-supabase-auth-starter
+#
+# This file defines who must review and approve changes
+# to specific files or directories before they can be merged.
+#
+# GitHub requires code owner approval when branch protection
+# rule "Require review from Code Owners" is enabled.
+#
+# @see https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for ALL files in the repository
+*                                       @jjmendezrodriguez
+
+# Critical: CI/CD workflows and GitHub configuration
+.github/                                @jjmendezrodriguez
+
+# Critical: Supabase services (database, auth, config)
+frontEnd/src/services/supabase/         @jjmendezrodriguez
+
+# Critical: State management stores
+frontEnd/src/stores/                    @jjmendezrodriguez
+
+# Critical: Authentication hooks
+frontEnd/src/hooks/useAuth.ts           @jjmendezrodriguez
+
+# Critical: Security documentation
+SECURITY.md                             @jjmendezrodriguez
+
+# Critical: Deployment configuration
+vercel.json                             @jjmendezrodriguez
+
+# Critical: Build and bundler configuration
+frontEnd/vite.config.ts                 @jjmendezrodriguez
+frontEnd/tsconfig.json                  @jjmendezrodriguez
+frontEnd/tsconfig.app.json              @jjmendezrodriguez
+
+# Critical: Environment and dependencies
+frontEnd/package.json                   @jjmendezrodriguez
