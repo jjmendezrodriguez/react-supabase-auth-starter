@@ -45,10 +45,10 @@ jobs:
       - name: Build project
         run: cd frontEnd && bun run build
 
-      # Step 4: Security Audit (using npm audit which works with bun.lockb)
+      # Step 4: Security Audit - Blocks merge on moderate+ vulnerabilities
       - name: Security audit
-        run: cd frontEnd && bunx npm-check-updates --target minor || echo "⚠️ Dependencies up to date"
-        continue-on-error: true
+        run: cd frontEnd && npx audit-ci --moderate
+        continue-on-error: false
 
       # Optional: Upload build artifacts
       - name: Upload build artifacts
