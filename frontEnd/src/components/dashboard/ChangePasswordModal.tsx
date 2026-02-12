@@ -1,17 +1,17 @@
 // ChangePasswordModal component
 // Modal for changing user password
 
-import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { supabase } from "@/services/supabase/db";
-import { PasswordInput } from "@/components/auth";
-import AlertModal from "@/components/AlertModal";
-import { validatePassword } from "@/utils/validators";
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { supabase } from '@/services/supabase/db'
+import { PasswordInput } from '@/components/auth'
+import AlertModal from '@/components/AlertModal'
+import { validatePassword } from '@/utils/validators'
 
 interface ChangePasswordModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  userEmail: string;
+  isOpen: boolean
+  onClose: () => void
+  userEmail: string
 }
 
 /**
@@ -26,72 +26,44 @@ export default function ChangePasswordModal({
   onClose,
   userEmail,
 }: ChangePasswordModalProps) {
-  const { t } = useTranslation();
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordVerified, setPasswordVerified] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  /**
-   * Verify current password in real-time
-   */
-  useEffect(() => {
-    const verifyPassword = async () => {
-      if (currentPassword.length < 6) {
-        setPasswordVerified(false);
-        return;
-      }
-
-      try {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: userEmail,
-          password: currentPassword,
-        });
-
-        setPasswordVerified(!error);
-      } catch {
-        setPasswordVerified(false);
-      }
-    };
-
-    // Debounce password verification
-    const timeoutId = setTimeout(verifyPassword, 500);
-    return () => clearTimeout(timeoutId);
-  }, [currentPassword, userEmail]);
+  const { t } = useTranslation()
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [showError, setShowError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   /**
    * Handle password change
    * Validates current password and updates to new password
    */
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
     // Validate passwords match
     if (newPassword !== confirmPassword) {
-      setErrorMessage(t("dashboard.changePassword.passwordsDontMatch"));
-      setShowError(true);
-      setLoading(false);
-      return;
+      setErrorMessage(t('dashboard.changePassword.passwordsDontMatch'))
+      setShowError(true)
+      setLoading(false)
+      return
     }
 
     // Validate password strength (same as signup)
-    const passwordValidation = validatePassword(newPassword);
+    const passwordValidation = validatePassword(newPassword)
     if (!passwordValidation.isValid) {
       if (!passwordValidation.hasMinLength) {
-        setErrorMessage(t("auth.errors.passwordTooShort"));
+        setErrorMessage(t('auth.errors.passwordTooShort'))
       } else if (!passwordValidation.hasUppercase) {
-        setErrorMessage(t("auth.errors.passwordNoUppercase"));
+        setErrorMessage(t('auth.errors.passwordNoUppercase'))
       } else if (!passwordValidation.hasNumber) {
-        setErrorMessage(t("auth.errors.passwordNoNumber"));
+        setErrorMessage(t('auth.errors.passwordNoNumber'))
       }
-      setShowError(true);
-      setLoading(false);
-      return;
+      setShowError(true)
+      setLoading(false)
+      return
     }
 
     try {
@@ -99,86 +71,77 @@ export default function ChangePasswordModal({
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: userEmail,
         password: currentPassword,
-      });
+      })
 
       if (signInError) {
-        setErrorMessage(t("dashboard.changePassword.error"));
-        setShowError(true);
-        setLoading(false);
-        return;
+        setErrorMessage(t('dashboard.changePassword.error'))
+        setShowError(true)
+        setLoading(false)
+        return
       }
 
       // Update password
       const { error: updateError } = await supabase.auth.updateUser({
         password: newPassword,
-      });
+      })
 
       if (updateError) {
-        setErrorMessage(t("dashboard.changePassword.error"));
-        setShowError(true);
+        setErrorMessage(t('dashboard.changePassword.error'))
+        setShowError(true)
       } else {
-        setShowSuccess(true);
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
+        setShowSuccess(true)
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
       }
     } catch {
-      setErrorMessage(t("dashboard.changePassword.error"));
-      setShowError(true);
+      setErrorMessage(t('dashboard.changePassword.error'))
+      setShowError(true)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   /**
    * Handle close
    * Resets form and closes modal
    */
   const handleClose = () => {
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setErrorMessage("");
-    onClose();
-  };
+    setCurrentPassword('')
+    setNewPassword('')
+    setConfirmPassword('')
+    setErrorMessage('')
+    onClose()
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <>
       <div
         className="bg-opacity-50 fixed inset-0 z-40 flex items-center justify-center bg-black p-4"
         onClick={(e) => {
-          if (e.target === e.currentTarget) handleClose();
+          if (e.target === e.currentTarget) handleClose()
         }}
       >
         <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
           <h2 className="mb-4 text-2xl font-bold">
-            {t("dashboard.changePassword.title")}
+            {t('dashboard.changePassword.title')}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <PasswordInput
-                label={t("dashboard.changePassword.currentPassword")}
+                label={t('dashboard.changePassword.currentPassword')}
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
               />
-              {currentPassword.length >= 6 && (
-                <p
-                  className={`mt-1 text-xs ${passwordVerified ? "text-green-600" : "text-red-600"}`}
-                >
-                  {passwordVerified
-                    ? "✓ Password verified"
-                    : "✗ Incorrect password"}
-                </p>
-              )}
             </div>
 
             <div>
               <PasswordInput
-                label={t("dashboard.changePassword.newPassword")}
+                label={t('dashboard.changePassword.newPassword')}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
@@ -189,39 +152,39 @@ export default function ChangePasswordModal({
                   <p
                     className={
                       validatePassword(newPassword).hasMinLength
-                        ? "text-green-600"
-                        : "text-gray-500"
+                        ? 'text-green-600'
+                        : 'text-gray-500'
                     }
                   >
-                    {validatePassword(newPassword).hasMinLength ? "✓" : "○"}{" "}
-                    {t("auth.signup.requirement8Chars")}
+                    {validatePassword(newPassword).hasMinLength ? '✓' : '○'}{' '}
+                    {t('auth.signup.requirement8Chars')}
                   </p>
                   <p
                     className={
                       validatePassword(newPassword).hasUppercase
-                        ? "text-green-600"
-                        : "text-gray-500"
+                        ? 'text-green-600'
+                        : 'text-gray-500'
                     }
                   >
-                    {validatePassword(newPassword).hasUppercase ? "✓" : "○"}{" "}
-                    {t("auth.signup.requirementUppercase")}
+                    {validatePassword(newPassword).hasUppercase ? '✓' : '○'}{' '}
+                    {t('auth.signup.requirementUppercase')}
                   </p>
                   <p
                     className={
                       validatePassword(newPassword).hasNumber
-                        ? "text-green-600"
-                        : "text-gray-500"
+                        ? 'text-green-600'
+                        : 'text-gray-500'
                     }
                   >
-                    {validatePassword(newPassword).hasNumber ? "✓" : "○"}{" "}
-                    {t("auth.signup.requirementNumber")}
+                    {validatePassword(newPassword).hasNumber ? '✓' : '○'}{' '}
+                    {t('auth.signup.requirementNumber')}
                   </p>
                 </div>
               )}
             </div>
 
             <PasswordInput
-              label={t("dashboard.changePassword.confirmPassword")}
+              label={t('dashboard.changePassword.confirmPassword')}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -234,7 +197,7 @@ export default function ChangePasswordModal({
                 className="btn btn-primary flex-1"
                 disabled={loading}
               >
-                {loading ? "..." : t("dashboard.changePassword.submit")}
+                {loading ? '...' : t('dashboard.changePassword.submit')}
               </button>
               <button
                 type="button"
@@ -242,7 +205,7 @@ export default function ChangePasswordModal({
                 className="btn flex-1"
                 disabled={loading}
               >
-                {t("dashboard.changePassword.cancel")}
+                {t('dashboard.changePassword.cancel')}
               </button>
             </div>
           </form>
@@ -253,17 +216,17 @@ export default function ChangePasswordModal({
       <AlertModal
         isOpen={showSuccess}
         onClose={() => {
-          setShowSuccess(false);
-          handleClose();
+          setShowSuccess(false)
+          handleClose()
         }}
-        title={t("dashboard.changePassword.success")}
+        title={t('dashboard.changePassword.success')}
         message=""
         shadowColor="shadow-green-500"
         extraButton={
           <button
             onClick={() => {
-              setShowSuccess(false);
-              handleClose();
+              setShowSuccess(false)
+              handleClose()
             }}
             className="btn font-bold"
           >
@@ -286,5 +249,5 @@ export default function ChangePasswordModal({
         }
       />
     </>
-  );
+  )
 }

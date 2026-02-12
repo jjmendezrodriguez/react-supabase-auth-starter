@@ -1,17 +1,24 @@
 // LoginModal component
 // Modal for user authentication with email/password and Google OAuth
 
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { supabase } from '@/services/supabase/db'
 import { AuthInput, PasswordInput, OAuthButton } from '@/components/auth'
 import useAuthForm from '@/hooks/useAuthForm'
-import AlertModal from '@/components/AlertModal'
-import { useState } from 'react'
 import { createBackdropClickHandler } from '@/utils/modalHelpers'
 import { logger } from '@/utils/logger'
 import { useAuthStore } from '@/stores/authStore'
 import { useUIStore } from '@/stores/uiStore'
+import {
+  isRateLimited,
+  getRemainingLockSeconds,
+  recordFailedAttempt,
+  resetAttempts,
+} from '@/utils/rateLimiter'
+
+const RATE_LIMIT_KEY = 'login'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -31,8 +38,24 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const switchToForgotPassword = useUIStore((s) => s.switchToForgotPassword)
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [showInvalidCredentialsAlert, setShowInvalidCredentialsAlert] =
-    useState(false)
+  const [lockSeconds, setLockSeconds] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval>>(null)
+
+  // Countdown timer for rate limit lockout
+  useEffect(() => {
+    if (lockSeconds > 0) {
+      timerRef.current = setInterval(() => {
+        const remaining = getRemainingLockSeconds(RATE_LIMIT_KEY)
+        setLockSeconds(remaining)
+        if (remaining <= 0 && timerRef.current) {
+          clearInterval(timerRef.current)
+        }
+      }, 1000)
+      return () => {
+        if (timerRef.current) clearInterval(timerRef.current)
+      }
+    }
+  }, [lockSeconds > 0])
 
   // Use auth form hook for form state and validation
   const {
@@ -44,8 +67,14 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     resetForm,
   } = useAuthForm({
     onSubmit: async ({ email, password }) => {
+      // Check rate limit before attempting login
+      if (isRateLimited(RATE_LIMIT_KEY)) {
+        setLockSeconds(getRemainingLockSeconds(RATE_LIMIT_KEY))
+        setGeneralError('auth.errors.tooManyAttempts')
+        return
+      }
+
       try {
-        // Authenticate with Supabase
         const { data, error: authError } =
           await supabase.auth.signInWithPassword({
             email,
@@ -53,20 +82,18 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           })
 
         if (authError) {
-          // Check if error is invalid credentials
-          if (
-            authError.message.includes('Invalid') ||
-            authError.message.includes('credentials')
-          ) {
-            setShowInvalidCredentialsAlert(true)
+          recordFailedAttempt(RATE_LIMIT_KEY)
+          if (isRateLimited(RATE_LIMIT_KEY)) {
+            setLockSeconds(getRemainingLockSeconds(RATE_LIMIT_KEY))
+            setGeneralError('auth.errors.tooManyAttempts')
           } else {
-            setGeneralError('auth.errors.loginError')
+            setGeneralError('auth.errors.invalidCredentials')
           }
           return
         }
 
         if (data.user) {
-          // Success - update auth store directly
+          resetAttempts(RATE_LIMIT_KEY)
           const firstName = data.user.user_metadata?.firstName
           const lastName = data.user.user_metadata?.lastName
           const displayName =
@@ -77,8 +104,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
           login(data.user.id, displayName, email, firstName, lastName)
           onClose()
-
-          // Redirect to user dashboard after successful login
           navigate('/user')
         }
       } catch (err) {
@@ -202,11 +227,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <button
               type="submit"
               className="btn w-full"
-              disabled={formState.loading}
+              disabled={formState.loading || lockSeconds > 0}
             >
               {formState.loading
                 ? t('auth.login.loading')
-                : t('auth.login.submit')}
+                : lockSeconds > 0
+                  ? `${t('auth.login.submit')} (${lockSeconds}s)`
+                  : t('auth.login.submit')}
             </button>
           </form>
 
@@ -263,31 +290,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           </button>
         </div>
       </div>
-
-      {/* Invalid credentials alert */}
-      <AlertModal
-        isOpen={showInvalidCredentialsAlert}
-        onClose={() => setShowInvalidCredentialsAlert(false)}
-        title={t('auth.errors.invalidCredentials')}
-        message={
-          <div>
-            <p className="mb-3">{t('auth.errors.invalidCredentialsMessage')}</p>
-            <p>
-              {t('auth.errors.noAccount')}{' '}
-              <a
-                href="https://supabase.com/dashboard"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
-              >
-                {t('auth.errors.createAccountLink')}
-              </a>
-            </p>
-          </div>
-        }
-        shadowColor="shadow-red-500"
-        closeOnBackdropClick={true}
-      />
     </>
   )
 }
