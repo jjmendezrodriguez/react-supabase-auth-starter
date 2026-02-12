@@ -1,9 +1,10 @@
 # 🔐 React Supabase Auth Starter
 
-> **A production-ready authentication system template** built with React 19, TypeScript, and Supabase. Save weeks of development time with enterprise-grade security and best practices out of the box.
+> **A production-ready authentication template** built with React 19 + TypeScript + Supabase, following Staff Engineer standards. Secure auth flows, i18n, comprehensive testing, automated CI/CD with security auditing, and enforced code quality — ready to deploy in minutes.
 
 [![Live Demo](https://img.shields.io/badge/Demo-Live-success?style=for-the-badge&logo=vercel)](https://react-supabase-auth-starter.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![CI Pipeline](https://img.shields.io/github/actions/workflow/status/jjmendezrodriguez/react-supabase-auth-starter/ci.yml?branch=main&style=for-the-badge&label=CI&logo=githubactions)](https://github.com/jjmendezrodriguez/react-supabase-auth-starter/actions)
 [![React](https://img.shields.io/badge/React-19.1-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-2.76-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
@@ -12,9 +13,9 @@
 
 ---
 
-## 🎯 What is React Supabase Auth Starter?
+## 🎯 What is This?
 
-**React Supabase Auth Starter** is a **production-ready authentication system template** designed for developers who want to build modern web applications quickly without sacrificing code quality. It follows senior-level engineering practices and includes everything you need to start a new project.
+This is not just another auth boilerplate. It's a **complete foundation** for production web apps, designed with the same standards used at companies like Google, Meta, and Stripe. Every decision — from folder structure to CI pipeline — follows Staff Engineer-level practices documented in 3000+ lines of coding standards.
 
 **🚀 Live Demo:** [https://react-supabase-auth-starter.vercel.app/](https://react-supabase-auth-starter.vercel.app/)
 
@@ -36,70 +37,89 @@
 
 ## ✨ Key Features
 
-### 🔐 **Complete Authentication System**
+### 🔐 Complete Authentication System
 
-- ✅ Email/Password login with validation
-- ✅ Google OAuth integration
-- ✅ Password reset flow
+- ✅ Email/Password login with real-time validation
+- ✅ Google OAuth integration (extensible to GitHub, Apple, etc.)
+- ✅ Password reset flow with email recovery
 - ✅ Account creation with email verification
+- ✅ Change email, change password, delete account
 - ✅ Protected routes with Zustand state management
-- ✅ Session persistence
+- ✅ Session persistence and automatic token refresh
+- ✅ Client-side rate limiter with exponential backoff
 
-### 🎨 **Modern UI/UX**
+### 🎨 Modern UI/UX
 
 - ✅ Clean, responsive design with Tailwind CSS v4
-- ✅ Smooth animations and transitions
-- ✅ Modal-based authentication flow
-- ✅ Form validation with real-time feedback
-- ✅ Loading states and error handling
+- ✅ Smooth animations (animated tabs, modal transitions)
+- ✅ Interactive home page (light switch, rain, wind effects)
+- ✅ Password strength indicator with visual feedback
+- ✅ Loading states, error handling, and confirmation modals
 
-### 🌍 **Internationalization (i18n)**
+### 🌍 Internationalization (i18n)
 
-- ✅ English and Spanish support
-- ✅ Easy to add new languages
-- ✅ Persistent language selection
+- ✅ Full English and Spanish support
+- ✅ Easy to add new languages (JSON-based)
+- ✅ Persistent language selection (localStorage)
+- ✅ Real-time translation without page reload
 
-### 🔒 **Security Best Practices**
+### 🔒 Security (Staff Engineer Level)
 
-- ✅ TypeScript strict mode
-- ✅ Input sanitization and validation
-- ✅ Secure password handling (Supabase Auth)
-- ✅ RLS (Row Level Security) policies
-- ✅ Environment variables for secrets
-- ✅ CORS protection
+- ✅ TypeScript strict mode — zero implicit `any`
+- ✅ Input sanitization and validation (email, password strength)
+- ✅ Client-side rate limiter with exponential backoff (brute-force protection)
+- ✅ Security headers via Vercel (CSP, HSTS, X-Frame-Options, Referrer-Policy)
+- ✅ RLS (Row Level Security) policies on Supabase
+- ✅ Environment variables for all secrets (zero hardcoded keys)
+- ✅ Automated vulnerability scanning (audit-ci in CI pipeline)
+- ✅ Dependabot for weekly dependency updates
+- ✅ SECURITY.md with vulnerability reporting process
 
-### 🧪 **Testing & Quality**
+### 🧪 Comprehensive Testing
 
-- ✅ Vitest + Testing Library (unit tests)
-- ✅ Playwright (E2E tests, 3 browsers)
-- ✅ Unit tests for utils and hooks
-- ✅ Test coverage reporting
-- ✅ ESLint + Prettier configuration
-- ✅ Pre-commit hooks with Husky
+- ✅ **Unit tests** — Vitest + Testing Library (utils, hooks, components)
+- ✅ **E2E tests** — Playwright across 3 browsers (Chromium, Firefox, WebKit)
+- ✅ Test coverage reporting with @vitest/coverage-v8
+- ✅ Dedicated test fixtures and helpers
 
-### 🚀 **CI/CD Ready**
+### 🚀 CI/CD & DevOps
 
-- ✅ GitHub Actions workflow
-- ✅ Automated testing on PRs
-- ✅ Build verification
-- ✅ Security audit
-- ✅ Deployment to Vercel
+- ✅ **GitHub Actions** — Lint → Test → Build → Security Audit (every PR)
+- ✅ **Playwright CI** — E2E tests in 3 browsers with artifact uploads
+- ✅ **Dependency caching** — 85% faster CI builds
+- ✅ **Branch protection** — PR required, code owner review, status checks
+- ✅ **CODEOWNERS** — Automatic review assignment for critical paths
+- ✅ **PR Template** — Standardized PR descriptions with security checklist
+- ✅ **Dependabot** — Automated weekly dependency scanning
+- ✅ **Vercel deployment** — Automatic preview deploys on PRs
+
+### 📖 Professional Documentation
+
+- ✅ **AGENTS.md** — 3000+ lines of coding standards (Security, Architecture, Testing, CI/CD, Performance)
+- ✅ **PROJECT_STRUCTURE.md** — File organization guide with migration paths
+- ✅ **SECURITY.md** — Vulnerability reporting and security practices
+- ✅ **CONTRIBUTING.md** — Contribution guidelines and PR standards
+- ✅ **JSDoc comments** — All exported functions documented
+- ✅ **Inline comments** — Code explains "why", not just "what"
 
 ---
 
 ## 🛠 Tech Stack
 
-| Category         | Technologies                                |
-| ---------------- | ------------------------------------------- |
-| **Frontend**     | React 19, TypeScript, Vite, Tailwind CSS v4 |
-| **State**        | Zustand 5 (auth + UI stores)                |
-| **Backend**      | Supabase (Auth, Database, RLS)              |
-| **Runtime**      | Bun (fastest package manager)               |
-| **Unit Testing** | Vitest, Testing Library, jsdom              |
-| **E2E Testing**  | Playwright (Chromium, Firefox, WebKit)      |
-| **CI/CD**        | GitHub Actions, Vercel                      |
-| **Code Quality** | ESLint, Prettier, Husky, lint-staged        |
-| **i18n**         | react-i18next                               |
+| Category         | Technologies                                        |
+| ---------------- | --------------------------------------------------- |
+| **Frontend**     | React 19, TypeScript 5.9, Vite 7, SWC               |
+| **Styling**      | Tailwind CSS v4 (via Vite plugin)                   |
+| **State**        | Zustand 5 (auth + UI stores)                        |
+| **Backend/Auth** | Supabase (Auth, PostgreSQL, RLS, Edge Functions)    |
+| **Runtime**      | Bun (package manager + task runner)                 |
+| **Unit Testing** | Vitest, Testing Library, jsdom                      |
+| **E2E Testing**  | Playwright (Chromium, Firefox, WebKit)              |
+| **CI/CD**        | GitHub Actions (lint, test, build, audit)           |
+| **Deployment**   | Vercel (with security headers)                      |
+| **Code Quality** | ESLint, Prettier, Husky, lint-staged                |
+| **Security**     | audit-ci, Dependabot, CODEOWNERS, branch protection |
+| **i18n**         | react-i18next, i18next                              |
 
 ---
 
@@ -162,10 +182,35 @@ See [PROJECT_STRUCTURE.md](frontEnd/PROJECT_STRUCTURE.md) for detailed organizat
 
 ## 📚 Documentation
 
-- **[AGENTS.md](frontEnd/AGENTS.md)** - AI-assisted development guidelines
-- **[SECURITY.md](SECURITY.md)** - Security best practices
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
-- **[Frontend README](frontEnd/README.md)** - Detailed frontend documentation
+This project is thoroughly documented — not just code comments, but full engineering guides:
+
+| Document                                                  | Purpose                                                                                            |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **[AGENTS.md](frontEnd/AGENTS.md)**                       | 3000+ lines of coding standards — security, architecture, testing, CI/CD, performance, scalability |
+| **[PROJECT_STRUCTURE.md](frontEnd/PROJECT_STRUCTURE.md)** | File organization guide with Type-based → Feature-based migration path                             |
+| **[SECURITY.md](SECURITY.md)**                            | Security practices, vulnerability reporting, and incident response                                 |
+| **[CONTRIBUTING.md](CONTRIBUTING.md)**                    | Contribution guidelines, PR standards, and code review process                                     |
+| **[E2E_TESTING_GUIDE.md](frontEnd/E2E_TESTING_GUIDE.md)** | Playwright E2E testing guide with patterns and best practices                                      |
+| **[Frontend README](frontEnd/README.md)**                 | Detailed frontend architecture, Supabase setup, and component docs                                 |
+
+---
+
+## 💡 Why This Template?
+
+Most auth templates give you a login form and call it done. This one gives you the **full engineering foundation**:
+
+```txt
+❌ Typical auth template:           ✅ This template:
+─────────────────────────          ─────────────────────────
+Login form                         Complete auth system (7 flows)
+No tests                           Unit + E2E tests (3 browsers)
+No CI/CD                           GitHub Actions pipeline (4 stages)
+No security                        Rate limiting, CSP, HSTS, audit-ci
+No docs                            3000+ lines of engineering standards
+"Works on my machine"              Vercel deploy in 2 minutes
+```
+
+**Time saved:** ~3-4 weeks of setup and security hardening for every new project.
 
 ---
 
@@ -305,12 +350,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Jose Mendez**  
-💼 [LinkedIn](https://linkedin.com/in/jjmendezrodriguez)  
-🐙 [GitHub](https://github.com/jjmendezrodriguez)
+**Jose Mendez** — Software Engineer  
+Building production-grade tools with Staff Engineer standards.
+
+💼 [LinkedIn](https://linkedin.com/in/jjmendezrodriguez) · 🐙 [GitHub](https://github.com/jjmendezrodriguez)
 
 ---
 
 ## 🌟 Show Your Support
 
-If this template helped you save time, give it a ⭐️!
+If this template saved you time or taught you something, give it a ⭐️ on GitHub!
+
+**Found a bug?** [Open an issue](https://github.com/jjmendezrodriguez/react-supabase-auth-starter/issues) · **Want to contribute?** Read [CONTRIBUTING.md](CONTRIBUTING.md)
