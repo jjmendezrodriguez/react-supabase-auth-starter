@@ -17,10 +17,10 @@ Object.assign(process.env, env)
 const isCI = !!process.env.CI
 
 // En CI: build de producción (preview en puerto 4173)
-// En local: dev server (puerto 5174)
+// En local: dev server (puerto 5173)
 const baseURL =
   process.env.BASE_URL ||
-  (isCI ? 'http://localhost:4173' : 'http://localhost:5174')
+  (isCI ? 'http://localhost:4173' : 'http://localhost:5173')
 
 export default defineConfig({
   testDir: './e2e',
