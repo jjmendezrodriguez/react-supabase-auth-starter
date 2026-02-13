@@ -1,12 +1,27 @@
-# Edge Functions Deployment Guide
+# Supabase Backend Configuration
 
-This project uses Supabase Edge Functions for sensitive operations that require admin privileges.
+This folder contains all Supabase-related backend configuration.
 
-## Functions
+## 📂 Contents
 
-### `delete-user`
+### `supabase-schema.sql`
 
-Securely deletes a user account and associated profile data.
+Complete database schema for the profiles table. Execute this in your Supabase SQL Editor to set up:
+
+- Profiles table structure
+- Row Level Security (RLS) policies
+- Auto-creation triggers for new users
+- Updated_at timestamp triggers
+
+**Usage:**
+
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard) → SQL Editor
+2. Copy content from `supabase-schema.sql`
+3. Paste and run
+
+### `functions/delete-user/`
+
+Edge Function for secure user account deletion.
 
 **Why Edge Function?**
 
@@ -44,13 +59,13 @@ This will open a browser for authentication.
 
 ```bash
 # From project root
-cd /home/Josemendez/authTemplateApp
+cd /path/to/authTemplateApp
 
-# Link to your new project
-supabase link --project-ref lufegsteaafqkhogkebt
+# Link to your project
+supabase link --project-ref YOUR_PROJECT_REF
 ```
 
-**Note:** Replace `lufegsteaafqkhogkebt` with your actual project ID from the Supabase dashboard URL.
+**Note:** Replace `YOUR_PROJECT_REF` with your actual project ID from the Supabase dashboard URL.
 
 ### 4. Deploy Edge Functions
 
@@ -78,11 +93,13 @@ supabase functions deploy delete-user
 1. Go to Edge Functions → `delete-user`
 2. Click "Invoke Function"
 3. Add headers:
+
    ```json
    {
      "Authorization": "Bearer YOUR_USER_JWT_TOKEN"
    }
    ```
+
 4. Click "Send Request"
 
 ### From Terminal
@@ -90,7 +107,7 @@ supabase functions deploy delete-user
 ```bash
 # Get your JWT token first (login to your app and check browser localStorage)
 curl -i --location --request POST \
-  'https://lufegsteaafqkhogkebt.supabase.co/functions/v1/delete-user' \
+  'https://YOUR_PROJECT_REF.supabase.co/functions/v1/delete-user' \
   --header 'Authorization: Bearer YOUR_JWT_TOKEN' \
   --header 'Content-Type: application/json'
 ```
@@ -132,7 +149,7 @@ The function uses these environment variables (automatically available in Edge F
 
 ## Project Structure
 
-```
+```txt
 supabase/
 └── functions/
     └── delete-user/

@@ -1,3 +1,11 @@
+/**
+ * Edge Function: Delete User Account
+ *
+ * Runtime: Deno (Supabase Edge Functions)
+ * ⚠️ Import errors in VS Code are expected - this code runs on Supabase servers, not locally
+ *
+ * Deploy: supabase functions deploy delete-user
+ */
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 

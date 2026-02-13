@@ -74,6 +74,15 @@ VITE_SUPABASE_ANON_KEY=your_anon_public_key_here
 
 ### Create Profiles Table
 
+**Option A: Use the SQL file** (Recommended)
+
+1. Go to Supabase Dashboard → **SQL Editor**
+2. Click **"New Query"**
+3. Copy content from **`/supabase/supabase-schema.sql`** and paste it
+4. Click **"Run"** (▶️ button)
+
+**Option B: Manual SQL** (Copy-paste below)
+
 1. Go to Supabase Dashboard → **SQL Editor**
 2. Click **"New Query"**
 3. Paste the following SQL:
@@ -95,9 +104,9 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- Create policies
-CREATE POLICY "Public profiles are viewable by everyone"
+CREATE POLICY "Users can view own profile"
   ON public.profiles FOR SELECT
-  USING (true);
+  USING (auth.uid() = id);
 
 CREATE POLICY "Users can update own profile"
   ON public.profiles FOR UPDATE
@@ -144,9 +153,9 @@ CREATE TRIGGER on_profile_updated
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 ```
 
-4. Click **"Run"** (▶️ button)
+- Click **"Run"** (▶️ button)
 
-5. Verify in **Table Editor** → `profiles` table exists
+- Verify in **Table Editor** → `profiles` table exists
 
 **What this does:**
 
@@ -180,9 +189,11 @@ CREATE TRIGGER on_profile_updated
    - Application type: **Web application**
    - Name: `Auth Template - Supabase`
    - **Authorized redirect URIs:** (click "+ ADD URI")
-     ```
+
+     ```txt
      https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback
      ```
+
 5. Click **"Create"**
 6. Copy:
    - **Client ID:** `123456789-abcdefg.apps.googleusercontent.com`
@@ -206,15 +217,19 @@ CREATE TRIGGER on_profile_updated
 
 1. Go to Supabase Dashboard → **Authentication → URL Configuration**
 2. Set **Site URL:**
-   ```
+
+   ```txt
    http://localhost:5173
    ```
+
 3. Add **Redirect URLs:**
-   ```
-   http://localhost:5173/**
-   https://your-app.vercel.app/**
-   ```
-   ⚠️ Replace `your-app.vercel.app` with your actual Vercel domain
+
+```txt
+ http://localhost:5173/**
+ https://your-app.vercel.app/**
+```
+
+⚠️ Replace `your-app.vercel.app` with your actual Vercel domain
 
 **Why this matters:**
 
@@ -431,13 +446,16 @@ curl https://YOUR_PROJECT_REF.supabase.co/rest/v1/profiles \
 
 ### Test Edge Function
 
-1. **Login to your app** (http://localhost:5173)
+1. **Login to your app** `(http://localhost:5173)`
 2. **Open browser DevTools** → Console
 3. Get your JWT token:
+
    ```javascript
    localStorage.getItem('sb-YOUR_PROJECT_REF-auth-token')
    ```
+
 4. **Test with curl:**
+
    ```bash
    curl -i --location --request POST \
      'https://YOUR_PROJECT_REF.supabase.co/functions/v1/delete-user' \
@@ -497,7 +515,7 @@ curl https://YOUR_PROJECT_REF.supabase.co/rest/v1/profiles \
 
 ## 📚 Related Files
 
-- **Database Schema:** `/supabase-schema.sql`
+- **Database Schema:** `/supabase/supabase-schema.sql`
 - **Edge Function:** `/supabase/functions/delete-user/index.ts`
 - **Supabase Client:** `./db.ts`
 - **Supabase Config:** `./config.ts`
