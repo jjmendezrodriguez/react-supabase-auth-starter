@@ -139,7 +139,8 @@
       "success": "Cuenta eliminada exitosamente",
       "error": "Error al eliminar cuenta",
       "invalidPassword": "Contraseña incorrecta",
-      "confirmationMismatch": "Debes escribir 'DELETE' exactamente"
+      "confirmationMismatch": "Debes escribir 'DELETE' exactamente",
+      "oauthInfo": "Iniciaste sesión con Google. No necesitas contraseña — solo escribe DELETE para confirmar."
     }
   },
   "languageSwitcher": {

@@ -1,12 +1,14 @@
 // DeleteAccountModal component
-// Modal for deleting user account with password + DELETE confirmation
+// Modal for deleting user account with DELETE confirmation
+// Supports both email/password and OAuth (Google) users
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { supabase } from '@/services/supabase/db'
 import { PasswordInput } from '@/components/auth'
 import AlertModal from '@/components/AlertModal'
+import { logger } from '@/utils/logger'
 
 interface DeleteAccountModalProps {
   isOpen: boolean
@@ -17,7 +19,8 @@ interface DeleteAccountModalProps {
 /**
  * DeleteAccountModal component
  * Allows user to delete their account permanently
- * Requires BOTH password verification AND typing "DELETE"
+ * Email users: password + typing "DELETE"
+ * OAuth users: only typing "DELETE" (identity verified via session JWT)
  * @param isOpen - Controls modal visibility
  * @param onClose - Callback when modal closes
  * @param userEmail - Current user email for verification
@@ -34,19 +37,42 @@ export default function DeleteAccountModal({
   const [loading, setLoading] = useState(false)
   const [showError, setShowError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [isOAuthUser, setIsOAuthUser] = useState(false)
+
+  // Detect if user signed in via OAuth (Google, etc.)
+  useEffect(() => {
+    const checkProvider = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (user) {
+        const provider = user.app_metadata?.provider
+        setIsOAuthUser(provider !== 'email')
+      }
+    }
+
+    if (isOpen) {
+      checkProvider()
+    }
+  }, [isOpen])
 
   // Check if delete button should be enabled
-  const isDeleteEnabled =
-    password.length >= 8 && confirmText === 'DELETE' && !loading
+  // OAuth users only need "DELETE" confirmation, email users also need password
+  const isDeleteEnabled = isOAuthUser
+    ? confirmText === 'DELETE' && !loading
+    : password.length >= 8 && confirmText === 'DELETE' && !loading
 
   /**
    * Handle account deletion
-   * Verifies password on submit, then deletes profile and signs out user
+   * Email users: verifies password then deletes via Edge Function
+   * OAuth users: skips password check, uses existing session JWT
    */
   const handleDelete = async () => {
     setLoading(true)
 
     try {
+      // Validate DELETE confirmation
       if (confirmText !== 'DELETE') {
         setErrorMessage(t('dashboard.deleteAccount.confirmationMismatch'))
         setShowError(true)
@@ -54,20 +80,22 @@ export default function DeleteAccountModal({
         return
       }
 
-      // Verify password on submit
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: userEmail,
-        password,
-      })
+      // For email users, verify password before proceeding
+      if (!isOAuthUser) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: userEmail,
+          password,
+        })
 
-      if (signInError) {
-        setErrorMessage(t('dashboard.deleteAccount.invalidPassword'))
-        setShowError(true)
-        setLoading(false)
-        return
+        if (signInError) {
+          setErrorMessage(t('dashboard.deleteAccount.invalidPassword'))
+          setShowError(true)
+          setLoading(false)
+          return
+        }
       }
 
-      // Get current session token
+      // Get current session token (valid for both email and OAuth users)
       const {
         data: { session },
       } = await supabase.auth.getSession()
@@ -103,7 +131,8 @@ export default function DeleteAccountModal({
 
       // Navigate to home
       navigate('/')
-    } catch {
+    } catch (err) {
+      logger.error('Delete account error', err)
       setErrorMessage(t('dashboard.deleteAccount.error'))
       setShowError(true)
       setLoading(false)
@@ -143,15 +172,26 @@ export default function DeleteAccountModal({
           </div>
 
           <div className="space-y-4">
-            {/* Password input */}
-            <div>
-              <PasswordInput
-                label={t('dashboard.deleteAccount.enterPassword')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+            {/* OAuth user info banner */}
+            {isOAuthUser && (
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                <p className="text-sm text-blue-800">
+                  {t('dashboard.deleteAccount.oauthInfo')}
+                </p>
+              </div>
+            )}
+
+            {/* Password input - only for email users */}
+            {!isOAuthUser && (
+              <div>
+                <PasswordInput
+                  label={t('dashboard.deleteAccount.enterPassword')}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            )}
 
             {/* DELETE confirmation */}
             <div>

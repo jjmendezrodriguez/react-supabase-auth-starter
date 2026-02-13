@@ -61,9 +61,9 @@ test.describe('Authentication', () => {
     // Submit
     await page.click(SELECTORS.loginModal.submitButton)
 
-    // Verificar que aparece modal de error ("Credenciales Inválidas")
+    // Verificar que aparece mensaje de error inline ("Credenciales Inválidas")
     await expect(
-      page.getByRole('heading', { name: /credenciales inválidas/i })
+      page.locator('.bg-red-50').getByText(/credenciales inválidas/i)
     ).toBeVisible({
       timeout: TIMEOUTS.apiResponse,
     })

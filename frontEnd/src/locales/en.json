@@ -139,7 +139,8 @@
       "success": "Account deleted successfully",
       "error": "Error deleting account",
       "invalidPassword": "Incorrect password",
-      "confirmationMismatch": "You must type 'DELETE' exactly"
+      "confirmationMismatch": "You must type 'DELETE' exactly",
+      "oauthInfo": "You signed in with Google. No password is required — just type DELETE to confirm."
     }
   },
   "languageSwitcher": {

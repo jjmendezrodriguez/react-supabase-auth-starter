@@ -27,5 +27,7 @@
   "javascript.preferences.quoteStyle": "single",
   "prettier.singleQuote": true,
   "prettier.semi": false,
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "deno.enable": false,
+  "deno.enablePaths": ["supabase/functions"]
 }

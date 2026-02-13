@@ -41,9 +41,12 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [lockSeconds, setLockSeconds] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval>>(null)
 
+  // Extract to a simple boolean for the dependency array
+  const isLocked = lockSeconds > 0
+
   // Countdown timer for rate limit lockout
   useEffect(() => {
-    if (lockSeconds > 0) {
+    if (isLocked) {
       timerRef.current = setInterval(() => {
         const remaining = getRemainingLockSeconds(RATE_LIMIT_KEY)
         setLockSeconds(remaining)
@@ -55,7 +58,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         if (timerRef.current) clearInterval(timerRef.current)
       }
     }
-  }, [lockSeconds > 0])
+  }, [isLocked])
 
   // Use auth form hook for form state and validation
   const {
