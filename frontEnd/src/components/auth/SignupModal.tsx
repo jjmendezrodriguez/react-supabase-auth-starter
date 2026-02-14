@@ -50,7 +50,7 @@ export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/user`,
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
             data: {
               firstName,
               lastName,

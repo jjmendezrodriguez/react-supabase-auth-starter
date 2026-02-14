@@ -8,6 +8,7 @@ import {
   type Profile,
   type ProfileUpdate,
 } from "@/services/supabase/profileService";
+import { useAuthStore } from "@/stores/authStore";
 import { logger } from "@/utils/logger";
 
 /**
@@ -15,17 +16,23 @@ import { logger } from "@/utils/logger";
  * Manages profile state and provides update functionality
  */
 export const useProfile = () => {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Fetch user profile on mount
+   * Fetch user profile when authenticated
    */
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    if (isAuthenticated) {
+      fetchProfile();
+    } else {
+      setProfile(null);
+      setLoading(false);
+    }
+  }, [isAuthenticated]);
 
   /**
    * Fetch profile from database

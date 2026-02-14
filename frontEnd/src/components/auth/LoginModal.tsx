@@ -103,9 +103,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             data.user.user_metadata?.display_name ||
             data.user.email ||
             'Usuario'
-          const email = data.user.email || ''
+          const userEmail = data.user.email || ''
 
-          login(data.user.id, displayName, email, firstName, lastName)
+          login(data.user.id, displayName, userEmail, firstName, lastName)
           onClose()
           navigate('/user')
         }

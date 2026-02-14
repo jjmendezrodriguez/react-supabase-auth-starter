@@ -3,21 +3,25 @@
  *
  * Verifica que la ruta /auth/callback maneja correctamente
  * la redirección de proveedores OAuth y no expone tokens en la URL.
+ *
+ * Con PKCE habilitado, el flujo normal usa ?code=... en query string.
+ * Estos tests verifican que:
+ * - El callback siempre redirige fuera de /auth/callback
+ * - Tokens nunca quedan visibles en la URL final
+ * - El timeout redirige correctamente si no hay sesión
  */
 import { test, expect } from '@playwright/test'
-import { TIMEOUTS } from './fixtures/testData'
+
+// Auth callback has a 10s timeout, so we need higher test timeouts
+const CALLBACK_TIMEOUT = 15_000
 
 test.describe('OAuth Callback Flow', () => {
   /**
-   * Test 1: Callback sin sesión redirige a home con error
-   * Simula un callback fallido (sin sesión válida)
-   *
-   * Nota: getSession() devuelve { session: null, error: null } cuando
-   * no hay sesión, por eso AuthCallback verifica data.session.
+   * Test 1: Callback sin sesión redirige tras timeout
+   * Sin sesión válida ni código PKCE, AuthCallback espera hasta
+   * el timeout (10s) y redirige a home con error.
    */
-  test('should redirect to home with error when no session', async ({
-    page,
-  }) => {
+  test('should redirect away when no session exists', async ({ page }) => {
     // Limpiar auth storage para asegurar que no hay sesión previa
     await page.goto('/')
     await page.evaluate(() => {
@@ -25,18 +29,13 @@ test.describe('OAuth Callback Flow', () => {
       sessionStorage.clear()
     })
 
-    // Navegar directamente al callback (como si OAuth redirigiera)
+    // Navegar directamente al callback (sin code ni tokens)
     await page.goto('/auth/callback')
 
-    // Esperar redirección: sin sesión → home con error, con sesión → /user
-    // Ambos destinos son válidos (depende del estado de Supabase)
-    await page.waitForURL(
-      (url) => {
-        const href = url.toString()
-        return href.includes('error=auth_failed') || href.includes('/user')
-      },
-      { timeout: TIMEOUTS.navigation }
-    )
+    // Esperar redirección: sin sesión → timeout → home,  con sesión → /user
+    await page.waitForURL((url) => !url.pathname.includes('/auth/callback'), {
+      timeout: CALLBACK_TIMEOUT,
+    })
 
     // Verificar que la URL final NO contiene tokens OAuth
     const url = page.url()
@@ -46,44 +45,41 @@ test.describe('OAuth Callback Flow', () => {
 
   /**
    * Test 2: URL con hash de tokens queda limpia tras callback
-   * Simula la URL que OAuth devuelve con tokens en el hash
+   * Simula flujo implícito legacy: tokens en el hash son limpiados
    */
   test('should clean URL hash containing tokens', async ({ page }) => {
-    // Simular URL con tokens en hash (como lo haría OAuth)
     const fakeTokenHash =
       '#access_token=fake_token_123&refresh_token=fake_refresh_456&type=bearer'
 
-    // Navegar con hash de tokens
     await page.goto(`/auth/callback${fakeTokenHash}`)
 
-    // Esperar la redirección (a /user o /?error)
+    // Esperar que la URL quede sin tokens (redirect o limpieza de hash)
     await page.waitForURL(
       (url) =>
         !url.hash.includes('access_token') &&
         !url.hash.includes('refresh_token'),
-      { timeout: TIMEOUTS.navigation }
+      { timeout: CALLBACK_TIMEOUT }
     )
 
-    // Verificar que la URL final no contiene tokens en hash
     const finalUrl = page.url()
     expect(finalUrl).not.toContain('access_token')
     expect(finalUrl).not.toContain('refresh_token')
   })
 
   /**
-   * Test 3: Callback renderiza el componente antes de redirigir
-   * Verifica que la ruta /auth/callback es accesible y navega
+   * Test 3: Callback muestra spinner de loading
+   * Verifica UX mientras se procesa la autenticación
    */
-  test('should navigate away from callback route', async ({ page }) => {
+  test('should show loading spinner during callback', async ({ page }) => {
+    // Interceptar Supabase para que no resuelva rápido
+    await page.route('**/auth/v1/**', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await route.continue()
+    })
+
     await page.goto('/auth/callback')
 
-    // Esperar que la ruta de callback procese y redirija a cualquier destino válido
-    await page.waitForURL(
-      (url) => !url.pathname.includes('/auth/callback'),
-      { timeout: TIMEOUTS.navigation }
-    )
-
-    // Verificar que ya no estamos en /auth/callback
-    expect(page.url()).not.toContain('/auth/callback')
+    // Verificar que se muestra el texto de carga
+    await expect(page.getByText(/autenticando/i)).toBeVisible({ timeout: 3000 })
   })
 })

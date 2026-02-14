@@ -1,7 +1,7 @@
 // ChangeEmailModal component
 // Modal for changing user email with password confirmation
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/services/supabase/db";
 import { AuthInput, PasswordInput } from "@/components/auth";
@@ -28,38 +28,10 @@ export default function ChangeEmailModal({
   const { t } = useTranslation();
   const [newEmail, setNewEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordVerified, setPasswordVerified] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  /**
-   * Verify password in real-time
-   */
-  useEffect(() => {
-    const verifyPassword = async () => {
-      if (password.length < 6) {
-        setPasswordVerified(false);
-        return;
-      }
-
-      try {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: currentEmail,
-          password,
-        });
-
-        setPasswordVerified(!error);
-      } catch {
-        setPasswordVerified(false);
-      }
-    };
-
-    // Debounce password verification
-    const timeoutId = setTimeout(verifyPassword, 500);
-    return () => clearTimeout(timeoutId);
-  }, [password, currentEmail]);
 
   /**
    * Handle email change
@@ -143,23 +115,12 @@ export default function ChangeEmailModal({
               required
             />
 
-            <div>
-              <PasswordInput
-                label={t("dashboard.changeEmail.currentPassword")}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              {password.length >= 6 && (
-                <p
-                  className={`mt-1 text-xs ${passwordVerified ? "text-green-600" : "text-red-600"}`}
-                >
-                  {passwordVerified
-                    ? "✓ Password verified"
-                    : "✗ Incorrect password"}
-                </p>
-              )}
-            </div>
+            <PasswordInput
+              label={t("dashboard.changeEmail.currentPassword")}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
             <div className="mt-6 flex gap-3">
               <button

@@ -116,17 +116,18 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
         } = await supabase.auth.getSession()
 
         if (session?.user) {
+          const meta = session.user.user_metadata
           set({
             isAuthenticated: true,
             user: {
               id: session.user.id,
               name:
-                session.user.user_metadata?.display_name ||
+                meta?.display_name ||
                 session.user.email ||
                 'Usuario',
               email: session.user.email || '',
-              firstName: session.user.user_metadata?.firstName,
-              lastName: session.user.user_metadata?.lastName,
+              firstName: meta?.firstName || meta?.given_name,
+              lastName: meta?.lastName || meta?.family_name,
             },
           })
         }
@@ -138,51 +139,30 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
     }
 
     checkSession()
-    // Helper to remove auth tokens from the URL hash (OAuth providers put tokens in the hash)
-    const clearAuthHash = () => {
-      try {
-        const hash = typeof window !== 'undefined' ? window.location.hash : ''
-        if (
-          hash &&
-          (hash.includes('access_token') ||
-            hash.includes('refresh_token') ||
-            hash.includes('error'))
-        ) {
-          const cleanUrl = `${window.location.origin}${window.location.pathname}${window.location.search}`
-          window.history.replaceState(null, '', cleanUrl)
-        }
-      } catch (err) {
-        // Non-critical: don't expose sensitive data in logs
-        logger.debug('Could not clear auth URL hash', { error: err })
-      }
-    }
 
-    // Clear hash after initial session check in case OAuth redirected with tokens
-    clearAuthHash()
     // Listen for auth state changes (login, logout, token refresh)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
+        const meta = session.user.user_metadata
         set({
           isAuthenticated: true,
           user: {
             id: session.user.id,
             email: session.user.email || '',
             name:
-              session.user.user_metadata?.display_name ||
+              meta?.display_name ||
               session.user.email ||
               'Usuario',
-            firstName: session.user.user_metadata?.firstName,
-            lastName: session.user.user_metadata?.lastName,
+            firstName: meta?.firstName || meta?.given_name,
+            lastName: meta?.lastName || meta?.family_name,
           },
         })
       } else {
         set({ isAuthenticated: false, user: null })
       }
       set({ loading: false })
-      // Remove any access/refresh tokens from the URL to avoid exposing them in the address bar
-      clearAuthHash()
     })
 
     // Return cleanup function

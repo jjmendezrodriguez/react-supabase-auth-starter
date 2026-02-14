@@ -7,10 +7,7 @@ import { AuthInput } from '@/components/auth'
 import { useState, type FormEvent } from 'react'
 import { getValidationError } from '@/utils/validators'
 import AlertModal from '@/components/AlertModal'
-import {
-  handleCloseAlert,
-  createBackdropClickHandler,
-} from '@/utils/modalHelpers'
+import { createBackdropClickHandler } from '@/utils/modalHelpers'
 import { logger } from '@/utils/logger'
 import { useUIStore } from '@/stores/uiStore'
 
@@ -221,7 +218,7 @@ export default function ForgotPasswordModal({
         closeOnBackdropClick={false}
         extraButton={
           <button
-            onClick={handleCloseAlert(setShowSuccessAlert)}
+            onClick={handleSuccessAlertClose}
             className="btn font-bold"
           >
             {t('auth.forgotPassword.close')}

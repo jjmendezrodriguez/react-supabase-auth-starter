@@ -14,6 +14,9 @@ validateSupabaseConfig()
  * Supabase client instance
  * Configured with environment variables from .env file
  *
+ * Auth uses PKCE flow for security: OAuth redirects receive a temporary
+ * `code` parameter instead of exposing access_token in the URL hash.
+ *
  * Usage example:
  * ```typescript
  * import { supabase } from '@/services/supabase/db'
@@ -25,5 +28,12 @@ validateSupabaseConfig()
  */
 export const supabase: SupabaseClient = createClient(
   supabaseConfig.url,
-  supabaseConfig.anonKey
+  supabaseConfig.anonKey,
+  {
+    auth: {
+      flowType: 'pkce',
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  }
 )
