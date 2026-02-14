@@ -15,6 +15,7 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 const Home = lazy(() => import('@/pages/Home'))
 const Dashboard = lazy(() => import('@/pages/Dashboard'))
 const Info = lazy(() => import('@/pages/Info'))
+const AuthCallback = lazy(() => import('@/pages/AuthCallback'))
 
 // Loading component for Suspense fallback
 const LoadingFallback = () => (
@@ -66,6 +67,7 @@ createRoot(document.getElementById('root')!).render(
                   </ProtectedRoute>
                 }
               />
+              <Route path="auth/callback" element={<AuthCallback />} />
               <Route path="info" element={<Info />} />
             </Route>
           </Routes>

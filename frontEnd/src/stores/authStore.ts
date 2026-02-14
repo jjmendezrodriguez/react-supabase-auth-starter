@@ -138,7 +138,27 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
     }
 
     checkSession()
+    // Helper to remove auth tokens from the URL hash (OAuth providers put tokens in the hash)
+    const clearAuthHash = () => {
+      try {
+        const hash = typeof window !== 'undefined' ? window.location.hash : ''
+        if (
+          hash &&
+          (hash.includes('access_token') ||
+            hash.includes('refresh_token') ||
+            hash.includes('error'))
+        ) {
+          const cleanUrl = `${window.location.origin}${window.location.pathname}${window.location.search}`
+          window.history.replaceState(null, '', cleanUrl)
+        }
+      } catch (err) {
+        // Non-critical: don't expose sensitive data in logs
+        logger.debug('Could not clear auth URL hash', { error: err })
+      }
+    }
 
+    // Clear hash after initial session check in case OAuth redirected with tokens
+    clearAuthHash()
     // Listen for auth state changes (login, logout, token refresh)
     const {
       data: { subscription },
@@ -161,6 +181,8 @@ export const useAuthStore = create<AuthState & AuthActions>()((set) => ({
         set({ isAuthenticated: false, user: null })
       }
       set({ loading: false })
+      // Remove any access/refresh tokens from the URL to avoid exposing them in the address bar
+      clearAuthHash()
     })
 
     // Return cleanup function

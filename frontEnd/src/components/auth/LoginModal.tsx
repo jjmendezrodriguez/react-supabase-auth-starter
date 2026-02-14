@@ -122,10 +122,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
    */
   const handleGoogleLogin = async () => {
     try {
-      // Use production domain if available, otherwise use current origin
-      const redirectUrl = import.meta.env.PROD
-        ? `${window.location.origin}/user`
-        : `${window.location.origin}/user`
+      // Redirect to /auth/callback to handle tokens securely
+      const redirectUrl = `${window.location.origin}/auth/callback`
 
       const { error: authError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
