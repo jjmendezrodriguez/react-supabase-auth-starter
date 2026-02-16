@@ -21,7 +21,7 @@ jobs:
 
       # Cache dependencies for 85% faster builds
       - name: Cache Bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.bun/install/cache
