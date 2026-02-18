@@ -109,7 +109,7 @@ export default function DeleteAccountModal({
 
       // Call Edge Function to delete user (has admin privileges)
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/rapid-endpoint`,
         {
           method: 'POST',
           headers: {
