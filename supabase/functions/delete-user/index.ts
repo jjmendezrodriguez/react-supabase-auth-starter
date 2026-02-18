@@ -16,6 +16,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2'
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:4173',
+  'https://react-supabase-auth-starter.vercel.app',
   'https://react-supabase-auth-starter-jjmendezrodriguezs-projects.vercel.app',
   Deno.env.get('ALLOWED_ORIGIN') ?? '',
 ].filter(Boolean)
@@ -134,7 +135,8 @@ Deno.serve(async (req: Request) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       },
     )
-  } catch (_error) {
+  } catch (error) {
+    console.error('Unhandled error in delete-user function:', error)
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
