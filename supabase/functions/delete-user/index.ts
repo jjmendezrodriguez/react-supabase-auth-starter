@@ -16,6 +16,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2'
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:4173',
+  'https://react-supabase-auth-starter-jjmendezrodriguezs-projects.vercel.app',
   Deno.env.get('ALLOWED_ORIGIN') ?? '',
 ].filter(Boolean)
 
