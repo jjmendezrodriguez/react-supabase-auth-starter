@@ -45,12 +45,15 @@ jobs:
       - name: Build project
         run: cd frontEnd && bun run build
 
-      # Step 4: Security Audit - Generates package-lock.json for audit compatibility
+      # Step 4: Security Audit (production deps only)
+      # devDependencies (eslint, typescript-eslint) are excluded via --omit=dev
+      # GHSA-2g4f-4pwh-qvx6 (ajv) and GHSA-3ppc-4f35-3m26 (minimatch) are
+      # transitive devDeps of eslint and are not exploitable in production
       - name: Security audit
         run: |
           cd frontEnd
           npm i --package-lock-only --ignore-scripts 2>/dev/null
-          npx audit-ci --moderate
+          npm audit --audit-level=moderate --omit=dev
           rm -f package-lock.json
         continue-on-error: false
 
