@@ -1,13 +1,17 @@
 // Header component
 // Main navigation bar with logo, nav links, language switcher and auth button
 
-import { useState } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
-import { LoginModal, SignupModal, ForgotPasswordModal } from '@/components/auth'
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
 import { useUIStore } from '@/stores/uiStore'
+
+// Lazy load auth modals — chunks only download when user first opens a modal
+const LoginModal = lazy(() => import('@/components/auth/LoginModal'))
+const SignupModal = lazy(() => import('@/components/auth/SignupModal'))
+const ForgotPasswordModal = lazy(() => import('@/components/auth/ForgotPasswordModal'))
 
 export default function Header() {
   const { isAuthenticated, logout, user } = useAuth()
@@ -22,6 +26,13 @@ export default function Header() {
 
   // Local state for mobile menu (component-specific)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Tracks if modals have been opened at least once — defers chunk download until needed
+  const [modalsLoaded, setModalsLoaded] = useState(false)
+
+  useEffect(() => {
+    if (activeAuthModal) setModalsLoaded(true)
+  }, [activeAuthModal])
 
   /**
    * Get user's full name from profile or user metadata
@@ -185,23 +196,23 @@ export default function Header() {
         )}
       </header>
 
-      {/* Login Modal */}
-      <LoginModal
-        isOpen={activeAuthModal === 'login'}
-        onClose={closeAuthModal}
-      />
-
-      {/* Signup Modal */}
-      <SignupModal
-        isOpen={activeAuthModal === 'signup'}
-        onClose={closeAuthModal}
-      />
-
-      {/* Forgot Password Modal */}
-      <ForgotPasswordModal
-        isOpen={activeAuthModal === 'forgotPassword'}
-        onClose={closeAuthModal}
-      />
+      {/* Auth modals — lazy loaded, only mounted after first open */}
+      {modalsLoaded && (
+        <Suspense fallback={null}>
+          <LoginModal
+            isOpen={activeAuthModal === 'login'}
+            onClose={closeAuthModal}
+          />
+          <SignupModal
+            isOpen={activeAuthModal === 'signup'}
+            onClose={closeAuthModal}
+          />
+          <ForgotPasswordModal
+            isOpen={activeAuthModal === 'forgotPassword'}
+            onClose={closeAuthModal}
+          />
+        </Suspense>
+      )}
     </>
   )
 }
