@@ -53,7 +53,9 @@ jobs:
         run: |
           cd frontEnd
           npm i --package-lock-only --ignore-scripts 2>/dev/null
+          echo "Running audit for production dependencies only (devDependencies excluded)..."
           npm audit --audit-level=moderate --omit=dev
+          echo "✓ No production vulnerabilities found"
           rm -f package-lock.json
         continue-on-error: false
 
