@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '@/services/supabase/db'
 import { PasswordInput } from '@/components/auth'
-import AlertModal from '@/components/AlertModal'
+import AlertModal from '@/components/ui/AlertModal'
 import { validatePassword } from '@/utils/validators'
 
 interface ChangePasswordModalProps {

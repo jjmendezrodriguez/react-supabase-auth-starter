@@ -6,7 +6,7 @@ import { Link, useNavigate, useLocation } from 'react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/hooks/useProfile'
 import { LoginModal, SignupModal, ForgotPasswordModal } from '@/components/auth'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
 import { useUIStore } from '@/stores/uiStore'
 
 export default function Header() {

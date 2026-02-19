@@ -4,7 +4,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "react-i18next";
-import AnimatedTabs from "@/components/AnimatedTabs";
+import AnimatedTabs from "@/components/ui/AnimatedTabs";
 import ProfileTab from "@/components/dashboard/ProfileTab";
 import SettingsTab from "@/components/dashboard/SettingsTab";
 

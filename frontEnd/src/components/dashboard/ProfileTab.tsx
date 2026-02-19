@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "react-i18next";
-import AlertModal from "@/components/AlertModal";
+import AlertModal from "@/components/ui/AlertModal";
 import ChangeEmailModal from "@/components/dashboard/ChangeEmailModal";
 import ChangePasswordModal from "@/components/dashboard/ChangePasswordModal";
 import DeleteAccountModal from "@/components/dashboard/DeleteAccountModal";

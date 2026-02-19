@@ -3,8 +3,8 @@
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import LanguageSwitcherDashboard from '@/components/LanguageSwitcherDashboard'
-import AlertModal from '@/components/AlertModal'
+import LanguageSwitcherDashboard from '@/components/ui/LanguageSwitcherDashboard'
+import AlertModal from '@/components/ui/AlertModal'
 import { useUIStore } from '@/stores/uiStore'
 import type { ThemeType } from '@/stores/uiStore'
 

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { supabase } from '@/services/supabase/db'
 import { PasswordInput } from '@/components/auth'
-import AlertModal from '@/components/AlertModal'
+import AlertModal from '@/components/ui/AlertModal'
 import { logger } from '@/utils/logger'
 
 interface DeleteAccountModalProps {
