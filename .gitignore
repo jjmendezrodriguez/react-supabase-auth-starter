@@ -58,9 +58,9 @@ Desktop.ini
 .cache/
 .parcel-cache/
 
-# Lock files (keep bun.lockb, ignore others)
+# Lock files (keep pnpm-lock.yaml, ignore others)
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
+bun.lockb
 
 CLAUDE.md

@@ -6,6 +6,27 @@
 
 ---
 
+## ⚠️ Package Manager Migration (May 2026)
+
+**This project migrated from Bun → pnpm** for supply chain security (May 2026 TanStack/Axios npm registry compromises). Global `minimum-release-age=1440` and `ignore-scripts=true` enforced.
+
+Translate any `bun X` examples below to pnpm equivalents:
+
+| Bun | pnpm |
+|---|---|
+| `bun install` | `pnpm install` |
+| `bun add <pkg>` | `pnpm add <pkg>` |
+| `bun add -d <pkg>` | `pnpm add -D <pkg>` |
+| `bun run <script>` | `pnpm run <script>` (or `pnpm <script>`) |
+| `bun test` | `pnpm test` |
+| `bun audit` | `pnpm audit` |
+| `bun.lockb` | `pnpm-lock.yaml` |
+| `oven-sh/setup-bun@v1` | `pnpm/action-setup@v4` |
+
+Lockfile committed: `pnpm-lock.yaml`. `packageManager: pnpm@11.1.1` in `package.json`.
+
+---
+
 ## 🤖 About This Document
 
 > **Purpose:** This file defines coding standards, best practices, and architectural guidelines for AI-assisted development.
